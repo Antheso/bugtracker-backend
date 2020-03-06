@@ -1,25 +1,13 @@
 package app.Entities.Project;
 
 public class Project {
-
     String projectId;
     String projectName;
 
-    public Project(String projectId, String projectName) {
+    public Project(String projectId, String projectName)
+    {
         this.projectId = projectId;
         this.projectName = projectName;
-    }
-
-    public Project() {
-
-    }
-
-    @Override
-    public String toString() {
-        return "Project{" +
-                "projectId='" + projectId + '\'' +
-                ", projectName='" + projectName + '\'' +
-                '}';
     }
 
     public String getProjectId() {
@@ -36,5 +24,13 @@ public class Project {
 
     public void setProjectName(String projectName) {
         this.projectName = projectName;
+    }
+
+    @Override
+    public String toString() {
+        return "Project{" +
+                "projectId='" + projectId + '\'' +
+                ", projectName='" + projectName + '\'' +
+                '}';
     }
 }

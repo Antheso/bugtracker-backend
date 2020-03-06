@@ -1,17 +1,13 @@
 package app.Entities.Status;
 
 public class Status {
-
     String statusId;
     String statusName;
 
-    public Status(String statusId, String statusName) {
+    public Status(String statusId, String statusName)
+    {
         this.statusId = statusId;
         this.statusName = statusName;
-    }
-
-    public Status() {
-
     }
 
     public String getStatusId() {
@@ -37,6 +33,4 @@ public class Status {
                 ", statusName='" + statusName + '\'' +
                 '}';
     }
-
-
 }

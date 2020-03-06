@@ -1,7 +1,5 @@
 package app.Entities.Type;
 
-import org.eclipse.jetty.util.StringUtil;
-
 public class Type {
     String typeId;
     String typeName;

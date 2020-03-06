@@ -7,7 +7,8 @@ import java.util.ArrayList;
 public class UserController {
     public static Handler fetchAllUser = ctx -> {
         ArrayList<User> userData = UserDao.getUsers();
-        if(userData != null){
+        if(userData != null)
+        {
             ctx.json(new Response(true, userData));
         }
         else throw new Exception("User not found");

@@ -74,4 +74,16 @@ public class User {
     public Role roleGet(){
         return Roles.values()[Integer.parseInt(getRoleId())];
     }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "name='" + name + '\'' +
+                ", userId='" + userId + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", loginName='" + loginName + '\'' +
+                ", roleId='" + roleId + '\'' +
+                ", password='" + password + '\'' +
+                '}';
+    }
 }

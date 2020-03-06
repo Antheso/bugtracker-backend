@@ -2,24 +2,22 @@ package app.Entities.Priority;
 
 import app.DB.PostgreConnector;
 import org.eclipse.jetty.util.StringUtil;
-
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.ArrayList;
-
 import static app.DB.Query.SELECT_TABLE_PRIORITY;
 
 public class PriorityDao {
-    public static ArrayList<Priority> priority;
-
     public static ArrayList<Priority> getPriority()
     {
-        priority = new ArrayList<Priority>();
-        try {
+        ArrayList<Priority> priority = new ArrayList<Priority>();
+        try
+        {
+            PostgreConnector.createConnection();
             ResultSet resultSet = PostgreConnector.executeSQL(SELECT_TABLE_PRIORITY);
 
-            while (resultSet.next()) {
+            while (resultSet.next())
+            {
                 String priorityId = resultSet.getString("priority_id");
                 String name = resultSet.getString("name");
 
@@ -29,8 +27,20 @@ public class PriorityDao {
                 priority.add(new Priority(priorityId, name));
             }
         }
-        catch (SQLException e) {
+        catch (SQLException e)
+        {
             e.printStackTrace();
+        }
+        finally
+        {
+            try
+            {
+                PostgreConnector.endConnection();
+            }
+            catch (SQLException e)
+            {
+                e.printStackTrace();
+            }
         }
         return priority;
     }

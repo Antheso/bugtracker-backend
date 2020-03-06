@@ -1,18 +1,14 @@
 package app.Security;
 
-import app.Entities.Authorization.Authorization;
-import app.Entities.User.User;
 import app.Javalin.Roles;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import io.javalin.core.security.AccessManager;
 import io.javalin.core.security.Role;
 import io.javalin.http.Context;
 import io.javalin.http.Handler;
-
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
-
 import static app.Javalin.JavalinManager.tokenStorage;
 
 public class JWTAccessManager implements AccessManager {
@@ -50,11 +46,12 @@ public class JWTAccessManager implements AccessManager {
         String userLevel = jwt.getClaim("roleId").asString();
         context.result(userLevel);
 
-        String token = jwt.getToken();
-        User d = tokenStorage.get(token);
-        if( d != null){
-            System.out.println("IS autorization");
-        }
+//Experemental
+//        String token = jwt.getToken();
+//        User currentUser = tokenStorage.get(token);
+//        if( currentUser != null){
+//            System.out.println("IS autorization");
+//        }
 
         if(userLevel.contains("0")) {
             defaultRole = Roles.ADMIN;
@@ -66,17 +63,13 @@ public class JWTAccessManager implements AccessManager {
     @Override
     public void manage(Handler handler, Context context, Set<Role> permittedRoles) throws Exception {
         Role role = extractRole(context);
-        //permittedRoles.contains(role)
-
-        handler.handle(context);
-
-//        if (isAuthorized(context)) {
+//      Experemental
+//        if (permittedRoles.contains(role) && isAuthorized(context)) {
 //            handler.handle(context);
 //        } else {
 //            context.status(401).result("Unauthorized");
 //            //context.redirect("/api/login");
 //        }
-
         handler.handle(context);
     }
 }

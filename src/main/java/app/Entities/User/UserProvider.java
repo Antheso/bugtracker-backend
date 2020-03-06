@@ -1,11 +1,13 @@
-package app.Security;
+package app.Entities.User;
 
-//import app.Entities.User.User;
-import app.Entities.User.User;
+import app.Security.JWTGenerator;
+import app.Security.JWTProvider;
+import app.Util.Configuration;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTCreator;
 import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
+import java.util.Properties;
 
 public class UserProvider {
     public static JWTProvider createHMAC512() {
@@ -13,13 +15,13 @@ public class UserProvider {
             JWTCreator.Builder token = JWT.create()
                     .withClaim("userId", user.getUserId())
                     .withClaim("name", user.getName())
-                    .withClaim("roleId", "0"); //user.getRoleId()
+                    .withClaim("roleId", user.getRoleId());
             return token.sign(alg);
         };
 
-        Algorithm algorithm = Algorithm.HMAC256("very_secret");
+        Properties properties = new Configuration("/config/configuration.yml").getProperties();
+        Algorithm algorithm = Algorithm.HMAC256(properties.getProperty("secret"));
         JWTVerifier verifier = JWT.require(algorithm).build();
-
         return new JWTProvider(algorithm, generator, verifier);
     }
 }

@@ -7,7 +7,8 @@ import java.util.ArrayList;
 public class StatusController {
     public static Handler fetchAllStatus = ctx -> {
         ArrayList<Status> statusData = StatusDao.getStatuses();
-        if(statusData != null){
+        if(statusData != null)
+        {
             ctx.json(new Response(true, statusData));
         }
         else throw new Exception("Status not found");

@@ -4,7 +4,6 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
 @JsonDeserialize(using = CommentDeserializer.class)
 public class Comment {
-
     String commentId;
     String text;
     String issueId;
@@ -53,5 +52,16 @@ public class Comment {
 
     public void setUserId(String userId) {
         this.userId = userId;
+    }
+
+    @Override
+    public String toString() {
+        return "Comment{" +
+                "commentId='" + commentId + '\'' +
+                ", text='" + text + '\'' +
+                ", issueId='" + issueId + '\'' +
+                ", userId='" + userId + '\'' +
+                ", timestamp='" + timestamp + '\'' +
+                '}';
     }
 }

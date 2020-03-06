@@ -7,7 +7,8 @@ import java.util.ArrayList;
 public class PriorityController {
     public static Handler fetchAllPriority = ctx -> {
         ArrayList<Priority> priorityData = PriorityDao.getPriority();
-        if(priorityData != null){
+        if(priorityData != null)
+        {
             ctx.json(new Response(true, priorityData));
         }
         else throw new Exception("Priority not found");

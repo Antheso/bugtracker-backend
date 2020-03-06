@@ -4,7 +4,6 @@ import app.Entities.Project.Project;
 import app.Entities.User.User;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
@@ -34,9 +33,8 @@ public class Issue {
     @JsonInclude(NON_NULL)
     User author;
 
-    public Issue(){}
-
-    public Issue(String summary, String description, String priorityId, String statusId, Project project, User assignee, User author) {
+    public Issue(String summary, String description, String priorityId, String statusId, Project project, User assignee, User author)
+    {
         this.summary = summary;
         this.description = description;
         this.priorityId = priorityId;
@@ -46,7 +44,8 @@ public class Issue {
         this.author = author;
     }
 
-    public Issue (ResultSet resultSet) {
+    public Issue (ResultSet resultSet)
+    {
         try {
             this.statusId = resultSet.getString("status_id");
             this.priorityId = resultSet.getString("priority_id");
@@ -58,6 +57,12 @@ public class Issue {
         } catch (SQLException e) {
             System.out.println("SQL error occurred: " + e.getMessage());
         }
+    }
+
+    public Issue(String issueId, String summary)
+    {
+        this.id = issueId;
+        this.summary = summary;
     }
 
     public User getAssignee() {
@@ -138,5 +143,21 @@ public class Issue {
 
     public void setAuthor(User author) {
         this.author = author;
+    }
+
+    @Override
+    public String toString() {
+        return "Issue{" +
+                "id='" + id + '\'' +
+                ", statusId='" + statusId + '\'' +
+                ", priorityId='" + priorityId + '\'' +
+                ", summary='" + summary + '\'' +
+                ", description='" + description + '\'' +
+                ", assigneId='" + assigneId + '\'' +
+                ", projectId='" + projectId + '\'' +
+                ", project=" + project +
+                ", assignee=" + assignee +
+                ", author=" + author +
+                '}';
     }
 }

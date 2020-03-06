@@ -1,19 +1,15 @@
 package app.Entities.Issue;
 
-import app.Entities.Authorization.Authorization;
 import app.Entities.User.User;
 import app.Security.JavalinJWT;
 import app.Util.Response;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.javalin.http.Handler;
-
 import java.util.ArrayList;
-
 import static app.Javalin.JavalinManager.tokenStorage;
 
 public class IssueController {
-
     public static Handler fetchAllIssue = ctx -> {
             ArrayList<Issue> data = IssueDao.getTableIssue();
             if (data != null && data.size() > 0)
@@ -23,23 +19,23 @@ public class IssueController {
 
     public static Handler fetchIssueByID = ctx -> {
         Issue tempIssue = IssueDao.getIssueByID(ctx.pathParam("id"));
-        if(tempIssue != null) {
+        if(tempIssue != null)
+        {
             ctx.json(new Response(true, tempIssue));
         }
         else throw new Exception("Issue not found");
-
     };
 
     public static Handler insertIssue = ctx -> {
         int inserRow = 0;
-
         ObjectMapper om = new ObjectMapper();
         Issue issue = om.readValue(ctx.body(), Issue.class);
 
         DecodedJWT jwt = JavalinJWT.getDecodedFromContext(ctx);
         User author = jwt != null ? tokenStorage.get(jwt.getToken()) : null;
 
-        if(author != null){
+        if(author != null)
+        {
             inserRow= IssueDao.addIssue(
                     issue.getSummary(),
                     issue.getDescription(),
@@ -51,8 +47,8 @@ public class IssueController {
             );
         }
 
-
-        if(inserRow > 0){
+        if(inserRow > 0)
+        {
             ctx.json(new Response(true, issue));
         }
         else throw new Exception("Insert issue failed");
@@ -79,7 +75,8 @@ public class IssueController {
 
     public static Handler deleteIssue = ctx -> {
         int deleteRow = IssueDao.deleteIssue(ctx.pathParam("id"));
-        if(deleteRow > 0) {
+        if(deleteRow > 0)
+        {
             ctx.json(new Response(true, "delete"));
         }
         else throw new Exception("Delete issue failed");

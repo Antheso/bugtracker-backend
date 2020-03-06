@@ -12,20 +12,26 @@ public class JWTProvider {
     private final JWTGenerator generator;
     private final JWTVerifier verifier;
 
-    public JWTProvider(Algorithm algorithm, JWTGenerator generator, JWTVerifier verifier) {
+    public JWTProvider(Algorithm algorithm, JWTGenerator generator, JWTVerifier verifier)
+    {
         this.algorithm = algorithm;
         this.generator = generator;
         this.verifier = verifier;
     }
 
-    public String generateToken(Object obj) {
+    public String generateToken(Object obj)
+    {
         return generator.generate(obj, algorithm);
     }
 
-    public Optional<DecodedJWT> validateToken(String token) {
-        try {
+    public Optional<DecodedJWT> validateToken(String token)
+    {
+        try
+        {
             return Optional.of(verifier.verify(token));
-        } catch (JWTVerificationException ex) {
+        }
+        catch (JWTVerificationException ex)
+        {
             return Optional.empty();
         }
     }
