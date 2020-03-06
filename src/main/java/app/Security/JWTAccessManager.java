@@ -1,6 +1,7 @@
 package app.Security;
 
 import app.Entities.Authorization.Authorization;
+import app.Entities.User.User;
 import app.Javalin.Roles;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import io.javalin.core.security.AccessManager;
@@ -50,7 +51,7 @@ public class JWTAccessManager implements AccessManager {
         context.result(userLevel);
 
         String token = jwt.getToken();
-        Authorization d = tokenStorage.get(token);
+        User d = tokenStorage.get(token);
         if( d != null){
             System.out.println("IS autorization");
         }
@@ -66,12 +67,15 @@ public class JWTAccessManager implements AccessManager {
     public void manage(Handler handler, Context context, Set<Role> permittedRoles) throws Exception {
         Role role = extractRole(context);
         //permittedRoles.contains(role)
-        if (isAuthorized(context)) {
-            handler.handle(context);
-        } else {
-            context.status(401).result("Unauthorized");
-            //context.redirect("/api/login");
-        }
+
+        handler.handle(context);
+
+//        if (isAuthorized(context)) {
+//            handler.handle(context);
+//        } else {
+//            context.status(401).result("Unauthorized");
+//            //context.redirect("/api/login");
+//        }
 
         handler.handle(context);
     }

@@ -2,11 +2,12 @@ package app.Entities.Priority;
 
 public class Priority {
 
-    String priorityId;
-    String priorityName;
+    private String priorityId;
+    private String priorityName;
 
-    public Priority() {
-
+    public Priority(String priorityId, String priorityName) {
+        this.priorityId = priorityId;
+        this.priorityName = priorityName;
     }
 
     public String getPriorityId() {

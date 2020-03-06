@@ -1,15 +1,15 @@
 package app.Entities.User;
 
-
+import app.Util.Response;
 import io.javalin.http.Handler;
+import java.util.ArrayList;
 
 public class UserController {
     public static Handler fetchAllUser = ctx -> {
-        try {
-            ctx.json(UserDao.getUsers());
+        ArrayList<User> userData = UserDao.getUsers();
+        if(userData != null){
+            ctx.json(new Response(true, userData));
         }
-        catch (Exception ex) {
-            ex.printStackTrace();
-        }
+        else throw new Exception("User not found");
     };
 }

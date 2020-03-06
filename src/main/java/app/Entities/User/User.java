@@ -4,15 +4,24 @@ import app.Javalin.Roles;
 import io.javalin.core.security.Role;
 
 public class User {
-    String name;
-    String userId;
-    String lastName;
-    String loginName;
-
-    String roleId;
+    private String name;
+    private String userId;
+    private String lastName;
+    private String loginName;
+    private String roleId;
     private String password;
 
-    public User(){}
+    public User(String userId, String name) {
+        this.name = name;
+        this.userId = userId;
+    }
+
+    public User(String userId, String password, String roleId, String name) {
+        this.userId = userId;
+        this.password = password;
+        this.roleId = roleId;
+        this.name = name;
+    }
 
     public String getName() {
         return name;

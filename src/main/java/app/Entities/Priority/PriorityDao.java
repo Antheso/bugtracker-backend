@@ -1,6 +1,7 @@
 package app.Entities.Priority;
 
 import app.DB.PostgreConnector;
+import org.eclipse.jetty.util.StringUtil;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -16,22 +17,16 @@ public class PriorityDao {
     {
         priority = new ArrayList<Priority>();
         try {
-            Statement stmt = PostgreConnector.connection.createStatement();
-            ResultSet resultSet = stmt.executeQuery(SELECT_TABLE_PRIORITY);
+            ResultSet resultSet = PostgreConnector.executeSQL(SELECT_TABLE_PRIORITY);
 
             while (resultSet.next()) {
-                Priority tempProject = new Priority();
-
                 String priorityId = resultSet.getString("priority_id");
                 String name = resultSet.getString("name");
 
-                if(priorityId == null && name == null)// bad way
+                if(StringUtil.isEmpty(priorityId) && StringUtil.isEmpty(name))
                     continue;
 
-                tempProject.setPriorityId(priorityId);
-                tempProject.setPriorityName(name);
-
-                priority.add(tempProject);
+                priority.add(new Priority(priorityId, name));
             }
         }
         catch (SQLException e) {

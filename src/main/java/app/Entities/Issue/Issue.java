@@ -13,42 +13,37 @@ import static com.fasterxml.jackson.annotation.JsonInclude.Include.*;
 
 @JsonDeserialize(using = IssueDeserializer.class)
 public class Issue {
+    @JsonInclude(NON_NULL)
     String id;
+    @JsonInclude(NON_NULL)
     String statusId;
+    @JsonInclude(NON_NULL)
     String priorityId;
+    @JsonInclude(NON_NULL)
     String summary;
+    @JsonInclude(NON_NULL)
     String description;
+    @JsonInclude(NON_NULL)
     String assigneId;
+    @JsonInclude(NON_NULL)
     String projectId;
+    @JsonInclude(NON_NULL)
     Project project;
+    @JsonInclude(NON_NULL)
     User assignee;
+    @JsonInclude(NON_NULL)
+    User author;
 
     public Issue(){}
 
-    public Issue(String summary, String description, String priorityId, String statusId, Project project, User assignee) {
+    public Issue(String summary, String description, String priorityId, String statusId, Project project, User assignee, User author) {
         this.summary = summary;
         this.description = description;
         this.priorityId = priorityId;
         this.statusId = statusId;
         this.project = project;
         this.assignee = assignee;
-    }
-
-    public Issue (
-            String statusId,
-            String priorityId,
-            String issueId,
-            String summary,
-            String description,
-            String assigneId,
-            String projectId
-    ) {
-        this.statusId = statusId;
-        this.priorityId = priorityId;
-        this.summary = summary;
-        this.description = description;
-        this.assigneId = assigneId;
-        this.projectId = projectId;
+        this.author = author;
     }
 
     public Issue (ResultSet resultSet) {
@@ -135,5 +130,13 @@ public class Issue {
 
     public void setProject(Project project) {
         this.project = project;
+    }
+
+    public User getAuthor() {
+        return author;
+    }
+
+    public void setAuthor(User author) {
+        this.author = author;
     }
 }

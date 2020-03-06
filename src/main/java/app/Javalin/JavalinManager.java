@@ -8,6 +8,7 @@ import app.Entities.Priority.PriorityController;
 import app.Entities.Project.ProjectController;
 import app.Entities.Status.StatusController;
 import app.Entities.Type.TypeController;
+import app.Entities.User.User;
 import app.Entities.User.UserController;
 import app.Security.JWTAccessManager;
 
@@ -15,6 +16,7 @@ import app.Security.JWTProvider;
 import app.Security.JavalinJWT;
 import app.Security.UserProvider;
 import app.Util.Path;
+import app.Util.Response;
 import io.javalin.Javalin;
 import io.javalin.core.security.Role;
 import io.javalin.http.Handler;
@@ -26,7 +28,7 @@ import static io.javalin.apibuilder.ApiBuilder.*;
 public class JavalinManager {
     private static JavalinManager instance;
 
-    public static Map<String, Authorization> tokenStorage;
+    public static Map<String, User> tokenStorage;
     public static Javalin app;
     public static PostgreConnector db;
 
@@ -48,7 +50,7 @@ public class JavalinManager {
         provider = UserProvider.createHMAC512();
         decodeHandler = JavalinJWT.createCookieDecodeHandler(provider);
 
-        tokenStorage = new HashMap<String, Authorization>();
+        tokenStorage = new HashMap<String, User>();
         JWTAccessManager accessManager = new JWTAccessManager("level", rolesMapping, Roles.ANYONE);
 
         app.config.accessManager(accessManager);
@@ -65,6 +67,11 @@ public class JavalinManager {
     private static void addEndpoints() {
         app.before(decodeHandler);
 
+        app.exception(Exception.class, (e, ctx) -> {
+            e.printStackTrace();
+            ctx.json(new Response(false, e));
+        });
+
         get(Path.Web.ISSUE, IssueController.fetchAllIssue, new HashSet<>(Arrays.asList(Roles.ANYONE,Roles.ADMIN)));
 
         get(Path.Web.ONE_ISSUE, IssueController.fetchIssueByID, Collections.singleton(Roles.ANYONE));
@@ -80,7 +87,7 @@ public class JavalinManager {
         get(Path.Web.USERS, UserController.fetchAllUser, Collections.singleton(Roles.ANYONE));
 
         post(Path.Web.LOGIN, AuthorizationController.login, Collections.singleton(Roles.ANYONE));
-        get(Path.Web.VALIDATION, AuthorizationController.login, Collections.singleton(Roles.ANYONE));
+//        get(Path.Web.VALIDATION, AuthorizationController.login, Collections.singleton(Roles.ANYONE));
 
         get(Path.Web.COMMENT_BY_ISSUE, CommentController.fetchAllComment, Collections.singleton(Roles.ANYONE));
         post(Path.Web.COMMENT, CommentController.addComment, Collections.singleton(Roles.ANYONE));

@@ -27,7 +27,6 @@ public class AuthorizationController {
         JsonNode node = mapper.readTree(ctx.body());
 
         final String login = node.get("login").asText();
-//        final String password = new Hash(node.get("password").asText()).getHash();
         final String password = node.get("password").asText();
 
         if (!login.matches("[\\w-_]{" + login.length() + "}")) {
@@ -51,8 +50,7 @@ public class AuthorizationController {
         String token = JavalinManager.provider.generateToken(tempUser);
 
         JavalinJWT.addTokenToCookie(ctx, token);
-        tokenStorage.put(token, new Authorization(login, tempUser.roleGet()));
-        System.out.println("USER LOGIN AND MUST HAVE COOKIE");
+        tokenStorage.put(token, tempUser);
 
         ctx.json("{ \"ok\": \"true\" }");
     };

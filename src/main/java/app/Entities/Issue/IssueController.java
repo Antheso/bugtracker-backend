@@ -1,67 +1,87 @@
 package app.Entities.Issue;
 
+import app.Entities.Authorization.Authorization;
+import app.Entities.User.User;
+import app.Security.JavalinJWT;
+import app.Util.Response;
+import com.auth0.jwt.interfaces.DecodedJWT;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.javalin.http.Handler;
 
 import java.util.ArrayList;
 
+import static app.Javalin.JavalinManager.tokenStorage;
+
 public class IssueController {
 
     public static Handler fetchAllIssue = ctx -> {
-        try{
-            ArrayList<Issue> d = IssueDao.getTableIssue();
-            if (d.size() > 0)        ctx.json(d);
-        }
-            catch (Exception ex){
-                ctx.result(ex.toString());
-        }
+            ArrayList<Issue> data = IssueDao.getTableIssue();
+            if (data != null && data.size() > 0)
+                ctx.json(new Response(true, data));
+            else throw new Exception("Select issue failed");
     };
 
     public static Handler fetchIssueByID = ctx -> {
-        ctx.json(IssueDao.getIssueByID(ctx.pathParam("id")));
+        Issue tempIssue = IssueDao.getIssueByID(ctx.pathParam("id"));
+        if(tempIssue != null) {
+            ctx.json(new Response(true, tempIssue));
+        }
+        else throw new Exception("Issue not found");
+
     };
 
     public static Handler insertIssue = ctx -> {
-        try{
-            ObjectMapper om = new ObjectMapper();
+        int inserRow = 0;
 
-            Issue issue = om.readValue(ctx.body(), Issue.class);
+        ObjectMapper om = new ObjectMapper();
+        Issue issue = om.readValue(ctx.body(), Issue.class);
 
-            IssueDao.addIssue(
+        DecodedJWT jwt = JavalinJWT.getDecodedFromContext(ctx);
+        User author = jwt != null ? tokenStorage.get(jwt.getToken()) : null;
+
+        if(author != null){
+            inserRow= IssueDao.addIssue(
                     issue.getSummary(),
                     issue.getDescription(),
                     issue.getPriorityId(),
                     issue.getStatusId(),
                     issue.getProject().getProjectId(),
-                    issue.getAssignee().getUserId()
+                    issue.getAssignee().getUserId(),
+                    author.getUserId()
             );
         }
-        catch(Exception ex){
-            ex.printStackTrace();
-            ctx.result(ex.toString());
+
+
+        if(inserRow > 0){
+            ctx.json(new Response(true, issue));
         }
+        else throw new Exception("Insert issue failed");
     };
 
     public  static Handler updateIssue = ctx -> {
         ObjectMapper om = new ObjectMapper();
 
         Issue issue = om.readValue(ctx.body(), Issue.class);
-        try{
-            IssueDao.updateIssue(
-                    ctx.pathParam("id"),
-                    issue.getSummary(),
-                    issue.getDescription(),
-                    issue.getPriorityId(),
-                    issue.getStatusId(),
-                    issue.getProject().getProjectId(),
-                    issue.getAssignee().getUserId()
-            );
-        } catch (Exception ex){
-            ctx.result(ex.toString());
-        }
+        int updateRow = IssueDao.updateIssue(
+                ctx.pathParam("id"),
+                issue.getSummary(),
+                issue.getDescription(),
+                issue.getPriorityId(),
+                issue.getStatusId(),
+                issue.getProject().getProjectId(),
+                issue.getAssignee().getUserId()
+        );
+
+        if(updateRow > 0)
+            ctx.json(new Response(true, issue));
+        else throw new Exception("Update issue failed");
     };
 
     public static Handler deleteIssue = ctx -> {
-        IssueDao.deleteIssue(ctx.pathParam("id"));
+        int deleteRow = IssueDao.deleteIssue(ctx.pathParam("id"));
+        if(deleteRow > 0) {
+            ctx.json(new Response(true, "delete"));
+        }
+        else throw new Exception("Delete issue failed");
     };
 }

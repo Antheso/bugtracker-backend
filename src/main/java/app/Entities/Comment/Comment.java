@@ -1,6 +1,5 @@
 package app.Entities.Comment;
 
-import app.Entities.Issue.IssueDeserializer;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
 @JsonDeserialize(using = CommentDeserializer.class)
@@ -10,22 +9,18 @@ public class Comment {
     String text;
     String issueId;
     String userId;
-    String timestamp; //DATE - Milesec
-
-    public Comment() {
-    }
-
-    public Comment(String issueId, String text, String userId) {
-        this.issueId = issueId;
-        this.text = text;
-        this.userId = userId;
-    }
+    String timestamp;
 
     public Comment(String issueId, String text, String userId, String timestamp) {
         this.issueId = issueId;
         this.text = text;
         this.userId = userId;
         this.timestamp = timestamp;
+    }
+
+    public Comment(String userId, String text){
+        this.userId = userId;
+        this.text = text;
     }
 
     public String getCommentId() {

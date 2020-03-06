@@ -1,6 +1,7 @@
 package app.Entities.Type;
 
 import app.DB.PostgreConnector;
+import org.eclipse.jetty.util.StringUtil;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -17,22 +18,16 @@ public class TypeDao {
     {
         types = new ArrayList<Type>();
         try {
-            Statement stmt = PostgreConnector.connection.createStatement();
-            ResultSet resultSet = stmt.executeQuery(SELECT_TABLE_TYPES);
+            ResultSet resultSet = PostgreConnector.executeSQL(SELECT_TABLE_TYPES);
 
             while (resultSet.next()) {
-                Type tempType = new Type();
-
                 String typeId = resultSet.getString("type_id");
                 String typeName = resultSet.getString("name");
 
-                if(typeId == null && typeName == null)// bad way
+                if(StringUtil.isEmpty(typeId) && StringUtil.isEmpty(typeName))
                     continue;
 
-                tempType.setTypeId(typeId);
-                tempType.setTypeName(typeName);
-
-                types.add(tempType);
+                types.add(new Type(typeId, typeName));
             }
         }
         catch (SQLException e) {

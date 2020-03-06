@@ -1,11 +1,14 @@
 package app.Entities.Comment;
 
 import app.DB.PostgreConnector;
+import org.eclipse.jetty.util.StringUtil;
 
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.UUID;
 
 import static app.DB.Query.*;
 
@@ -16,22 +19,16 @@ public class CommentDao {
     {
         comments = new ArrayList<Comment>();
         try {
-            Statement stmt = PostgreConnector.connection.createStatement();
-            ResultSet resultSet = stmt.executeQuery(SELECT_COMMENT_BY_ISSUE_ID(id));
+            ResultSet resultSet = PostgreConnector.executeSQL(SELECT_COMMENT_BY_ISSUE_ID(id));
 
             while (resultSet.next()) {
-                Comment tempComment = new Comment();
-
                 String user_id = resultSet.getString("user_id");
                 String text = resultSet.getString("text");
 
-                if(user_id == null && text == null)// bad way
+                if(StringUtil.isEmpty(user_id) && StringUtil.isEmpty(text))
                     continue;
 
-                tempComment.setUserId(user_id);
-                tempComment.setText(text);
-
-                comments.add(tempComment);
+                comments.add(new Comment(user_id, text));
             }
         }
         catch (SQLException e) {
@@ -40,22 +37,26 @@ public class CommentDao {
         return comments;
     }
 
-    public static void addComment
-            (
-                String text,
-                String userId,
-                String issueId
-            )
+    public static int addComment
+    (
+        String text,
+        String userId,
+        String issueId
+    )
     {
         Statement stmt = null;
         try
         {
-            stmt = PostgreConnector.connection.createStatement();
-            stmt.executeUpdate(INSERT_COMMENT_PARAMS(text, issueId, userId));
+            PreparedStatement preparedStatement = PostgreConnector.createStatement(INSERT_COMMENT_PARAMS);
+            preparedStatement.setString(1, text);
+            preparedStatement.setObject(2, UUID.fromString(issueId));
+            preparedStatement.setObject(3, UUID.fromString(userId));
+            return preparedStatement.executeUpdate();
         }
         catch (SQLException ex)
         {
             ex.printStackTrace();
         }
+        return 0;
     }
 }

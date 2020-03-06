@@ -2,8 +2,6 @@ package app;
 
 import app.Javalin.JavalinManager;
 import io.javalin.Javalin;
-import io.javalin.core.util.RouteOverviewPlugin;
-
 
 public class Main {
     public static void main(String[] args) {

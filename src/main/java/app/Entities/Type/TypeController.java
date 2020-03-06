@@ -1,11 +1,15 @@
 package app.Entities.Type;
 
+import app.Util.Response;
 import io.javalin.http.Handler;
-import static app.Main.*;
+import java.util.ArrayList;
 
 public class TypeController {
-
     public static Handler fetchAllType = ctx -> {
-        ctx.json(TypeDao.getTypes());
+        ArrayList<Type> typeData = TypeDao.getTypes();
+        if(typeData != null){
+            ctx.json(new Response(true, typeData));
+        }
+        else throw new Exception("Type not found");
     };
 }

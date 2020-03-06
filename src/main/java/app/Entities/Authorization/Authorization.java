@@ -6,11 +6,13 @@ import java.util.Objects;
 
 public class Authorization {
     private String login;
+    private String name;
     private Role role;
 
-    public Authorization(String login, Role role) {
+    public Authorization(String login, Role role, String name) {
         this.login = login;
         this.role = role;
+        this.name = name;
     }
 
     public String getLogin() {
