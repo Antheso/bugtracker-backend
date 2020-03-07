@@ -2,6 +2,7 @@ package app.Entities.Issue;
 
 import app.DB.PostgreConnector;
 import org.eclipse.jetty.util.StringUtil;
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -10,13 +11,12 @@ import java.util.UUID;
 import static app.DB.Query.*;
 
 public class IssueDao {
-    public static ArrayList<Issue> getTableIssue()
-    {
+    public static ArrayList<Issue> getTableIssue() throws SQLException {
         ArrayList<Issue> issues = new ArrayList<Issue>();
+        Connection connection = PostgreConnector.createConnection();
         try
         {
-            PostgreConnector.createConnection();
-            ResultSet resultSet = PostgreConnector.executeSQL(SELECT_TABLE_INFO_ISSUES);
+            ResultSet resultSet = PostgreConnector.executeSQL(connection, SELECT_TABLE_INFO_ISSUES);
 
             while (resultSet.next())
             {
@@ -35,14 +35,7 @@ public class IssueDao {
         }
         finally
         {
-            try
-            {
-                PostgreConnector.endConnection();
-            }
-            catch (SQLException e)
-            {
-                e.printStackTrace();
-            }
+            connection.close();
         }
         return issues;
     }
@@ -50,10 +43,10 @@ public class IssueDao {
     public static Issue getIssueByID(String id)
     {
         ArrayList<Issue> issues = new ArrayList<Issue>();
+        Connection connection = PostgreConnector.createConnection();
         try
         {
-            PostgreConnector.createConnection();
-            ResultSet resultSet = PostgreConnector.executeSQL(SELECT_ISSUE_BY_ID(id));
+            ResultSet resultSet = PostgreConnector.executeSQL(connection, SELECT_ISSUE_BY_ID(id));
             while (resultSet.next())
             {
                 issues.add(new Issue(resultSet));
@@ -67,7 +60,7 @@ public class IssueDao {
         {
             try
             {
-                PostgreConnector.endConnection();
+                connection.close();
             }
             catch (SQLException e)
             {
@@ -87,12 +80,12 @@ public class IssueDao {
         String projectId,
         String assigneId,
         String userId
-    )
-    {
+    ) throws SQLException {
+        Connection connection = PostgreConnector.createConnection();
         try
         {
             PostgreConnector.createConnection();
-            PreparedStatement statement = PostgreConnector.createStatement(INSERT_ISSUE_PARAMS);
+            PreparedStatement statement = PostgreConnector.createStatement(connection, INSERT_ISSUE_PARAMS);
             statement.setString(1, summary);
             statement.setString(2, description);
             statement.setInt(3, Integer.parseInt(priorityId));
@@ -108,14 +101,7 @@ public class IssueDao {
         }
         finally
         {
-            try
-            {
-                PostgreConnector.endConnection();
-            }
-            catch (SQLException e)
-            {
-                e.printStackTrace();
-            }
+            connection.close();
         }
 
         return 0;
@@ -130,12 +116,12 @@ public class IssueDao {
         String statusId,
         String projectId,
         String assigneId
-    )
-    {
+    ) throws SQLException {
+        Connection connection = PostgreConnector.createConnection();
         try
         {
             PostgreConnector.createConnection();
-            PreparedStatement statement = PostgreConnector.createStatement(UPDATE_ISSUE_BY_ID);
+            PreparedStatement statement = PostgreConnector.createStatement(connection, UPDATE_ISSUE_BY_ID);
             statement.setString(1, summary);
             statement.setString(2, description);
             statement.setInt(3, Integer.parseInt(priorityId));
@@ -152,25 +138,18 @@ public class IssueDao {
         }
         finally
         {
-            try
-            {
-                PostgreConnector.endConnection();
-            }
-            catch (SQLException e)
-            {
-                e.printStackTrace();
-            }
+           connection.close();
         }
 
         return 0;
     }
 
-    public static int deleteIssue(String id)
-    {
+    public static int deleteIssue(String id) throws SQLException {
+        Connection connection = PostgreConnector.createConnection();
         try
         {
             PostgreConnector.createConnection();
-            return PostgreConnector.createStatement(DELETE_ISSUE_BY_ID(id)).executeUpdate();
+            return PostgreConnector.createStatement(connection, DELETE_ISSUE_BY_ID(id)).executeUpdate();
         }
         catch (SQLException ex)
         {
@@ -178,14 +157,7 @@ public class IssueDao {
         }
         finally
         {
-            try
-            {
-                PostgreConnector.endConnection();
-            }
-            catch (SQLException e)
-            {
-                e.printStackTrace();
-            }
+            connection.close();
         }
         return 0;
     }

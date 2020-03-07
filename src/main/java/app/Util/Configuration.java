@@ -1,35 +1,27 @@
 package app.Util;
 import app.DB.PostgreConnector;
-import com.google.common.io.Files;
 import org.yaml.snakeyaml.Yaml;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.util.Map;
 import java.util.Properties;
 
 public class Configuration {
-    private static String path;
-    private Properties properties;
+    private String path;
+    public static Properties properties;
 
-    public Configuration(String path)
+    public Configuration()
     {
+        final String filePath = "/config/configuration.yml";
         String relatePath = PostgreConnector.class.getProtectionDomain().getCodeSource().getLocation().getPath();
         relatePath = new File(relatePath).getParent();
-        this.path = relatePath + path;
+        this.path = relatePath + filePath;
+
+        readProperties();
     }
 
-    private void setProperty(String key, Object value)
-    {
-        if (value != null)
-        {
-            properties.setProperty(key, value.toString());
-        }
-    }
-
-    public Properties getProperties()
+    private Properties readProperties()
     {
         properties = new Properties();
         Yaml yaml = new Yaml();
@@ -44,11 +36,26 @@ public class Configuration {
             setProperty("database_user", configurationMap.get("database_user"));
             setProperty("database_password", configurationMap.get("database_password"));
             setProperty("port", configurationMap.get("port"));
+            setProperty("secret", configurationMap.get("secret"));
+            setProperty("javalin_port", configurationMap.get("javalin_port"));
         }
         catch (IOException e)
         {
             e.printStackTrace();
         }
         return properties;
+    }
+
+    private void setProperty(String key, Object value)
+    {
+        if (value != null)
+        {
+            properties.setProperty(key, value.toString());
+        }
+    }
+
+    public int getIntProperty(String key, String defaultName)
+    {
+        return Integer.parseInt(properties.getProperty(key, defaultName));
     }
 }

@@ -31,27 +31,32 @@ public class IssueController {
         ObjectMapper om = new ObjectMapper();
         Issue issue = om.readValue(ctx.body(), Issue.class);
 
-        DecodedJWT jwt = JavalinJWT.getDecodedFromContext(ctx);
-        User author = jwt != null ? tokenStorage.get(jwt.getToken()) : null;
-
-        if(author != null)
+        try
         {
-            inserRow= IssueDao.addIssue(
-                    issue.getSummary(),
-                    issue.getDescription(),
-                    issue.getPriorityId(),
-                    issue.getStatusId(),
-                    issue.getProject().getProjectId(),
-                    issue.getAssignee().getUserId(),
-                    author.getUserId()
-            );
-        }
+            DecodedJWT jwt = JavalinJWT.getDecodedFromContext(ctx);
+            User author = jwt != null ? tokenStorage.get(jwt.getToken()) : null;
 
-        if(inserRow > 0)
-        {
-            ctx.json(new Response(true, issue));
+            if(author != null)
+            {
+                inserRow= IssueDao.addIssue(
+                        issue.getSummary(),
+                        issue.getDescription(),
+                        issue.getPriorityId(),
+                        issue.getStatusId(),
+                        issue.getProject().getProjectId(),
+                        issue.getAssignee().getUserId(),
+                        author.getUserId()
+                );
+            }else throw new Exception("Insert issue failed");
+
+            if(inserRow > 0)
+            {
+                ctx.json(new Response(true, issue));
+            }
+            else throw new Exception("Insert issue failed");
+        } catch (Exception ex) {
+
         }
-        else throw new Exception("Insert issue failed");
     };
 
     public  static Handler updateIssue = ctx -> {

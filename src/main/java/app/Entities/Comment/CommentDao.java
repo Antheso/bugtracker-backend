@@ -2,6 +2,7 @@ package app.Entities.Comment;
 
 import app.DB.PostgreConnector;
 import org.eclipse.jetty.util.StringUtil;
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -10,12 +11,12 @@ import java.util.UUID;
 import static app.DB.Query.*;
 
 public class CommentDao {
-    public static ArrayList<Comment> getComments(String id)
-    {
+    public static ArrayList<Comment> getComments(String id) throws SQLException {
         ArrayList<Comment> comments = new ArrayList<Comment>();
+        Connection connection = PostgreConnector.createConnection();
         try
         {
-            ResultSet resultSet = PostgreConnector.executeSQL(SELECT_COMMENT_BY_ISSUE_ID(id));
+            ResultSet resultSet = PostgreConnector.executeSQL(connection, SELECT_COMMENT_BY_ISSUE_ID(id));
 
             while (resultSet.next())
             {
@@ -34,14 +35,7 @@ public class CommentDao {
         }
         finally
         {
-            try
-            {
-                PostgreConnector.endConnection();
-            }
-            catch (SQLException e)
-            {
-                e.printStackTrace();
-            }
+            connection.close();
         }
 
         return comments;
@@ -52,11 +46,11 @@ public class CommentDao {
         String text,
         String userId,
         String issueId
-    )
-    {
+    ) throws SQLException {
+        Connection connection = PostgreConnector.createConnection();
         try
         {
-            PreparedStatement preparedStatement = PostgreConnector.createStatement(INSERT_COMMENT_PARAMS);
+            PreparedStatement preparedStatement = PostgreConnector.createStatement(connection, INSERT_COMMENT_PARAMS);
             preparedStatement.setString(1, text);
             preparedStatement.setObject(2, UUID.fromString(issueId));
             preparedStatement.setObject(3, UUID.fromString(userId));
@@ -68,14 +62,7 @@ public class CommentDao {
         }
         finally
         {
-            try
-            {
-                PostgreConnector.endConnection();
-            }
-            catch (SQLException e)
-            {
-                e.printStackTrace();
-            }
+            connection.close();
         }
         return 0;
     }

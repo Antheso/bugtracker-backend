@@ -7,7 +7,6 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTCreator;
 import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
-import java.util.Properties;
 
 public class UserProvider {
     public static JWTProvider createHMAC512() {
@@ -19,8 +18,7 @@ public class UserProvider {
             return token.sign(alg);
         };
 
-        Properties properties = new Configuration("/config/configuration.yml").getProperties();
-        Algorithm algorithm = Algorithm.HMAC256(properties.getProperty("secret"));
+        Algorithm algorithm = Algorithm.HMAC256(Configuration.properties.getProperty("secret"));
         JWTVerifier verifier = JWT.require(algorithm).build();
         return new JWTProvider(algorithm, generator, verifier);
     }

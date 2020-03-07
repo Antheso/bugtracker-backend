@@ -2,19 +2,19 @@ package app.Entities.Project;
 
 import app.DB.PostgreConnector;
 import org.eclipse.jetty.util.StringUtil;
+import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import static app.DB.Query.SELECT_TABLE_PROJECTS;
 
 public class ProjectDao {
-    public static ArrayList<Project> getProjects()
-    {
+    public static ArrayList<Project> getProjects() throws SQLException {
         ArrayList<Project> projects = new ArrayList<Project>();
+        Connection connection = PostgreConnector.createConnection();
         try
         {
-            PostgreConnector.createConnection();
-            ResultSet resultSet = PostgreConnector.executeSQL(SELECT_TABLE_PROJECTS);
+            ResultSet resultSet = PostgreConnector.executeSQL(connection, SELECT_TABLE_PROJECTS);
 
             while (resultSet.next())
             {
@@ -33,14 +33,7 @@ public class ProjectDao {
         }
         finally
         {
-            try
-            {
-                PostgreConnector.endConnection();
-            }
-            catch (SQLException e)
-            {
-                e.printStackTrace();
-            }
+            connection.close();
         }
         return projects;
     }

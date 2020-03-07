@@ -23,8 +23,8 @@ public class IssueDeserializer extends JsonDeserializer<Issue> {
 
         final String assigneeId = node.get("assignee").get("userId").asText();
         final String assigneeName = node.get("assignee").get("name").asText();
-        final String authorId = node.get("author").get("authorId").asText();
-        final String authorName = node.get("author").get("name").asText();
+//        final String authorId = node.get("author").get("authorId").asText();
+//        final String authorName = node.get("author").get("name").asText();
 
         final String description = node.get("description").asText();
         final String summary = node.get("summary").asText();
@@ -35,8 +35,8 @@ public class IssueDeserializer extends JsonDeserializer<Issue> {
         project.setProjectId(projectId);
 
         User assignee = new User(assigneeId, assigneeName);
-        User author = new User(authorId, authorName);
+//        User author = new User(authorId, authorName);
 
-        return new Issue(summary, description, priorityId, statusId, project, assignee, author);
+        return new Issue(summary, description, priorityId, statusId, project, assignee, assignee);
     }
 }

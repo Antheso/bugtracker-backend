@@ -7,13 +7,13 @@ import java.util.ArrayList;
 import static app.DB.Query.*;
 
 public class UserDao {
-    public static ArrayList<User> getUsers()
-    {
+    public static ArrayList<User> getUsers() throws SQLException {
         ArrayList<User> users = new ArrayList<User>();
+        Connection connection = PostgreConnector.createConnection();
         try
         {
             PostgreConnector.createConnection();
-            ResultSet resultSet = PostgreConnector.executeSQL(SELECT_TABLE_USERS);
+            ResultSet resultSet = PostgreConnector.executeSQL(connection, SELECT_TABLE_USERS);
 
             while (resultSet.next())
             {
@@ -32,25 +32,18 @@ public class UserDao {
         }
         finally
         {
-            try
-            {
-                PostgreConnector.endConnection();
-            }
-            catch (SQLException e)
-            {
-                e.printStackTrace();
-            }
+            connection.close();
         }
         return users;
     }
 
-    public static ArrayList<User> getUser(String login)
-    {
+    public static ArrayList<User> getUser(String login) throws SQLException {
         ArrayList<User> users = new ArrayList<User>();
+        Connection connection = PostgreConnector.createConnection();
         try
         {
             PostgreConnector.createConnection();
-            PreparedStatement preparedStatement = PostgreConnector.createStatement(SELECT_USER_BY_LOGIN);
+            PreparedStatement preparedStatement = PostgreConnector.createStatement(connection, SELECT_USER_BY_LOGIN);
             preparedStatement.setString(1, login);
             ResultSet resultSet = preparedStatement.executeQuery();
 
@@ -73,14 +66,7 @@ public class UserDao {
         }
         finally
         {
-            try
-            {
-                PostgreConnector.endConnection();
-            }
-            catch (SQLException e)
-            {
-                e.printStackTrace();
-            }
+            connection.close();
         }
         return users;
     }
