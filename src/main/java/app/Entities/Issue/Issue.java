@@ -33,8 +33,45 @@ public class Issue {
     @JsonInclude(NON_NULL)
     User author;
 
-    public Issue(String summary, String description, String priorityId, String statusId, Project project, User assignee, User author)
+    public Issue(String issueId, String summary)
     {
+        this.id = issueId;
+        this.summary = summary;
+    }
+
+//    public Issue(
+//        String issueId,
+//        String summary,
+//        String description,
+//        String priorityId,
+//        String statusId,
+//        String projectId,
+//        String assigneeId,
+//        String authorId
+//    )
+//    {
+//        this.id = issueId;
+//        this.summary = summary;
+//        this.description = description;
+//        this.priorityId = priorityId;
+//        this.statusId = statusId;
+//        this.project = new Project(projectId, null);
+//        this.assignee = new User(assigneeId, null);
+//        this.author = new User(authorId, null);
+//    }
+
+    public Issue(
+        String issueId,
+        String summary,
+        String description,
+        String priorityId,
+        String statusId,
+        Project project,
+        User assignee,
+        User author
+    )
+    {
+        this.id = issueId;
         this.summary = summary;
         this.description = description;
         this.priorityId = priorityId;
@@ -42,27 +79,6 @@ public class Issue {
         this.project = project;
         this.assignee = assignee;
         this.author = author;
-    }
-
-    public Issue (ResultSet resultSet)
-    {
-        try {
-            this.statusId = resultSet.getString("status_id");
-            this.priorityId = resultSet.getString("priority_id");
-            this.id = resultSet.getString("issue_id");
-            this.summary = resultSet.getString("summary");
-            this.description = resultSet.getString("description");
-            this.assigneId = resultSet.getString("assigne_id");
-            this.projectId = resultSet.getString("project_id");
-        } catch (SQLException e) {
-            System.out.println("SQL error occurred: " + e.getMessage());
-        }
-    }
-
-    public Issue(String issueId, String summary)
-    {
-        this.id = issueId;
-        this.summary = summary;
     }
 
     public User getAssignee() {

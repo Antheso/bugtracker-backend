@@ -22,10 +22,8 @@ public class TypeDao {
                 String typeId = resultSet.getString("type_id");
                 String typeName = resultSet.getString("name");
 
-                if(StringUtil.isEmpty(typeId) && StringUtil.isEmpty(typeName))
-                    continue;
-
-                types.add(new Type(typeId, typeName));
+                if(!StringUtil.isEmpty(typeId) && !StringUtil.isEmpty(typeName))
+                    types.add(new Type(typeId, typeName));
             }
         }
         catch (SQLException e)

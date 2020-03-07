@@ -21,10 +21,8 @@ public class PriorityDao {
                 String priorityId = resultSet.getString("priority_id");
                 String name = resultSet.getString("name");
 
-                if(StringUtil.isEmpty(priorityId) && StringUtil.isEmpty(name))
-                    continue;
-
-                priority.add(new Priority(priorityId, name));
+                if(!StringUtil.isEmpty(priorityId) && !StringUtil.isEmpty(name))
+                    priority.add(new Priority(priorityId, name));
             }
         }
         catch (SQLException e)

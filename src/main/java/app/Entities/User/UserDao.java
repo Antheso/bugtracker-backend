@@ -54,10 +54,8 @@ public class UserDao {
                 String roleId = resultSet.getString("role_id");
                 String name = resultSet.getString("name");
 
-                if(StringUtil.isEmpty(password) && StringUtil.isEmpty( userId ) && StringUtil.isEmpty(roleId) && StringUtil.isEmpty(name))
-                    continue;
-
-                users.add(new User(userId, password, roleId, name));
+                if(!StringUtil.isEmpty(password) && !StringUtil.isEmpty( userId ) && !StringUtil.isEmpty(roleId) && !StringUtil.isEmpty(name))
+                    users.add(new User(userId, password, roleId, name));
             }
         }
         catch (SQLException e)

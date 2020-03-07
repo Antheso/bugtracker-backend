@@ -23,10 +23,8 @@ public class StatusDao {
                 String statusId = resultSet.getString("status_id");
                 String name = resultSet.getString("name");
 
-                if(StringUtil.isEmpty(statusId) && StringUtil.isEmpty(name))
-                    continue;
-
-                statuses.add(new Status(statusId, name));
+                if(!StringUtil.isEmpty(statusId) && !StringUtil.isEmpty(name))
+                    statuses.add(new Status(statusId, name));
             }
         }
         catch (SQLException e)

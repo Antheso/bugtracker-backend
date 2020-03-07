@@ -19,7 +19,7 @@ public class IssueDeserializer extends JsonDeserializer<Issue> {
         JsonNode node = oc.readTree(jsonParser);
 
         final String projectId = node.get("project").get("projectId").asText();
-        final String projectName = node.get("project").get("name").asText();
+//        final String projectName = node.get("project").get("name").asText();
 
         final String assigneeId = node.get("assignee").get("userId").asText();
         final String assigneeName = node.get("assignee").get("name").asText();
@@ -31,12 +31,12 @@ public class IssueDeserializer extends JsonDeserializer<Issue> {
         final String priorityId = node.get("priorityId").asText();
         final String statusId = node.get("statusId").asText();
 
-        Project project = new Project(projectId, projectName);
+        Project project = new Project(projectId, null);
         project.setProjectId(projectId);
 
         User assignee = new User(assigneeId, assigneeName);
 //        User author = new User(authorId, authorName);
 
-        return new Issue(summary, description, priorityId, statusId, project, assignee, assignee);
+        return new Issue(null, summary, description, priorityId, statusId, project, assignee, assignee);
     }
 }

@@ -1,12 +1,15 @@
 package app.Entities.Issue;
 
 import app.DB.PostgreConnector;
+import app.Entities.Project.Project;
+import app.Entities.User.User;
 import org.eclipse.jetty.util.StringUtil;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Properties;
 import java.util.UUID;
 import static app.DB.Query.*;
 
@@ -23,10 +26,8 @@ public class IssueDao {
                 String issueId = resultSet.getString("issue_id");
                 String summary = resultSet.getString("summary");
 
-                if(StringUtil.isEmpty(issueId) && StringUtil.isEmpty(summary))
-                    continue;
-
-                issues.add(new Issue(issueId, summary));
+                if(!StringUtil.isEmpty(issueId) && !StringUtil.isEmpty(summary))
+                    issues.add(new Issue(issueId, summary));
             }
         }
         catch (SQLException e)
@@ -49,7 +50,16 @@ public class IssueDao {
             ResultSet resultSet = PostgreConnector.executeSQL(connection, SELECT_ISSUE_BY_ID(id));
             while (resultSet.next())
             {
-                issues.add(new Issue(resultSet));
+                String statusId = resultSet.getString("status_id");
+                String priorityId = resultSet.getString("priority_id");
+                String issueId = resultSet.getString("issue_id");
+                String summary = resultSet.getString("summary");
+                String description = resultSet.getString("description");
+                Project project = new Project(resultSet.getString("project_id"), null);
+                User assigne = new User(resultSet.getString("assigne_id"), null);
+                User author = new User(resultSet.getString("author_id"), null);
+
+                issues.add(new Issue(issueId, summary, description, priorityId, statusId, project, assigne , author));
             }
         }
         catch (SQLException e)

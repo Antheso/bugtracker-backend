@@ -21,10 +21,8 @@ public class ProjectDao {
                 String projectId = resultSet.getString("project_id");
                 String name = resultSet.getString("name");
 
-                if(StringUtil.isEmpty(projectId) && StringUtil.isEmpty(name))
-                    continue;
-
-                projects.add(new Project(projectId, name));
+                if(!StringUtil.isEmpty(projectId) && !StringUtil.isEmpty(name))
+                    projects.add(new Project(projectId, name));
             }
         }
         catch (SQLException e)

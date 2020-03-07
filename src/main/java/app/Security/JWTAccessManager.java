@@ -22,23 +22,22 @@ public class JWTAccessManager implements AccessManager {
         this.defaultRole = defaultRole;
     }
 
-    private boolean isAuthorized(Context context) {
-
-        if(!JavalinJWT.containsJWT(context)){
+    private boolean isAuthorized(Context context)
+    {
+        if(!JavalinJWT.containsJWT(context))
+        {
             return false;
         }
 
         DecodedJWT jwt = JavalinJWT.getDecodedFromContext(context);
-        if(tokenStorage.get(jwt.getToken()) != null){
-            return true;
-        }
-        return false;
+        return tokenStorage.get(jwt.getToken()) == null;
     }
 
 
     private Role extractRole(Context context)
     {
-        if (!JavalinJWT.containsJWT(context)) {
+        if (!JavalinJWT.containsJWT(context))
+        {
             return defaultRole;
         }
 
@@ -53,7 +52,8 @@ public class JWTAccessManager implements AccessManager {
 //            System.out.println("IS autorization");
 //        }
 
-        if(userLevel.contains("0")) {
+        if(userLevel.contains("0"))
+        {
             defaultRole = Roles.ADMIN;
         }
 

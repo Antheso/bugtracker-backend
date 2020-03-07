@@ -23,10 +23,8 @@ public class CommentDao {
                 String user_id = resultSet.getString("user_id");
                 String text = resultSet.getString("text");
 
-                if(StringUtil.isEmpty(user_id) && StringUtil.isEmpty(text))
-                    continue;
-
-                comments.add(new Comment(user_id, text));
+                if(!StringUtil.isEmpty(user_id) && !StringUtil.isEmpty(text))
+                    comments.add(new Comment(user_id, text));
             }
         }
         catch (SQLException e)
