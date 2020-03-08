@@ -8,10 +8,11 @@ import java.util.ArrayList;
 public class CommentController {
     public static Handler fetchAllComment = ctx -> {
         ArrayList<Comment> data = CommentDao.getComments(ctx.pathParam("issueId"));
-        if(data != null) {
+        if (data != null) {
             ctx.json(new Response(true, data));
+        } else {
+            throw new Exception("Comment not found");
         }
-        else throw new Exception("Comment not found");
     };
 
     public static Handler addComment = ctx -> {
@@ -19,12 +20,14 @@ public class CommentController {
         Comment comment = om.readValue(ctx.body(), Comment.class);
 
         int insertRow = CommentDao.addComment(
-            comment.getText(),
-            comment.getUserId(),
-            comment.getIssueId()
+                comment.getText(),
+                comment.getUserId(),
+                comment.getIssueId()
         );
-        if(insertRow > 0)
+        if (insertRow > 0)
             ctx.json(new Response(true, comment));
-        else throw new Exception("Comment not Added");
+        else {
+            throw new Exception("Comment not Added");
+        }
     };
 }

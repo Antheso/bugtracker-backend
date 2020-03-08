@@ -1,6 +1,7 @@
 package app.Util;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+
 import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
 
 public class Response {
@@ -11,11 +12,10 @@ public class Response {
     @JsonInclude(NON_NULL)
     private String error;
 
-    public Response(boolean status, Object data)
-    {
+    public Response(boolean status, Object data) {
         this.status = status ? "OK" : "ERROR";
 
-        if(status) {
+        if (status) {
             this.data = data;
         } else {
             this.error = data.toString();

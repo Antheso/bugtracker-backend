@@ -6,24 +6,28 @@ import app.Util.Response;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.javalin.http.Handler;
+
 import java.util.ArrayList;
+
 import static app.Javalin.JavalinManager.tokenStorage;
 
 public class IssueController {
     public static Handler fetchAllIssue = ctx -> {
-            ArrayList<Issue> data = IssueDao.getTableIssue();
-            if (data != null && data.size() > 0)
-                ctx.json(new Response(true, data));
-            else throw new Exception("Select issue failed");
+        ArrayList<Issue> data = IssueDao.getTableIssue();
+        if (data != null && data.size() > 0)
+            ctx.json(new Response(true, data));
+        else {
+            throw new Exception("Select issue failed");
+        }
     };
 
     public static Handler fetchIssueByID = ctx -> {
         Issue tempIssue = IssueDao.getIssueByID(ctx.pathParam("id"));
-        if(tempIssue != null)
-        {
+        if (tempIssue != null) {
             ctx.json(new Response(true, tempIssue));
+        } else {
+            throw new Exception("Issue not found");
         }
-        else throw new Exception("Issue not found");
     };
 
     public static Handler insertIssue = ctx -> {
@@ -31,35 +35,31 @@ public class IssueController {
         ObjectMapper om = new ObjectMapper();
         Issue issue = om.readValue(ctx.body(), Issue.class);
 
-        try
-        {
-            DecodedJWT jwt = JavalinJWT.getDecodedFromContext(ctx);
-            User author = jwt != null ? tokenStorage.get(jwt.getToken()) : null;
+        DecodedJWT jwt = JavalinJWT.getDecodedFromContext(ctx);
+        User author = jwt != null ? tokenStorage.get(jwt.getToken()) : null;
 
-            if(author != null)
-            {
-                inserRow= IssueDao.addIssue(
-                        issue.getSummary(),
-                        issue.getDescription(),
-                        issue.getPriorityId(),
-                        issue.getStatusId(),
-                        issue.getProject().getProjectId(),
-                        issue.getAssignee().getUserId(),
-                        author.getUserId()
-                );
-            }else throw new Exception("Insert issue failed");
+        if (author != null) {
+            inserRow = IssueDao.addIssue(
+                    issue.getSummary(),
+                    issue.getDescription(),
+                    issue.getPriorityId(),
+                    issue.getStatusId(),
+                    issue.getProject().getProjectId(),
+                    issue.getAssignee().getUserId(),
+                    author.getUserId()
+            );
+        } else {
+            throw new Exception("Insert issue failed");
+        }
 
-            if(inserRow > 0)
-            {
-                ctx.json(new Response(true, issue));
-            }
-            else throw new Exception("Insert issue failed");
-        } catch (Exception ex) {
-
+        if (inserRow > 0) {
+            ctx.json(new Response(true, issue));
+        } else {
+            throw new Exception("Insert issue failed");
         }
     };
 
-    public  static Handler updateIssue = ctx -> {
+    public static Handler updateIssue = ctx -> {
         ObjectMapper om = new ObjectMapper();
 
         Issue issue = om.readValue(ctx.body(), Issue.class);
@@ -73,17 +73,19 @@ public class IssueController {
                 issue.getAssignee().getUserId()
         );
 
-        if(updateRow > 0)
+        if (updateRow > 0)
             ctx.json(new Response(true, issue));
-        else throw new Exception("Update issue failed");
+        else {
+            throw new Exception("Update issue failed");
+        }
     };
 
     public static Handler deleteIssue = ctx -> {
         int deleteRow = IssueDao.deleteIssue(ctx.pathParam("id"));
-        if(deleteRow > 0)
-        {
+        if (deleteRow > 0) {
             ctx.json(new Response(true, "delete"));
+        } else {
+            throw new Exception("Delete issue failed");
         }
-        else throw new Exception("Delete issue failed");
     };
 }

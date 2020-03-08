@@ -71,7 +71,7 @@ public class User {
         this.password = password;
     }
 
-    public Role roleGet(){
+    public Role roleGet() {
         return Roles.values()[Integer.parseInt(getRoleId())];
     }
 

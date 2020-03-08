@@ -13,8 +13,7 @@ import java.io.IOException;
 
 public class IssueDeserializer extends JsonDeserializer<Issue> {
     @Override
-    public Issue deserialize(JsonParser jsonParser, DeserializationContext deserializationContext) throws IOException, JsonProcessingException
-    {
+    public Issue deserialize(JsonParser jsonParser, DeserializationContext deserializationContext) throws IOException, JsonProcessingException {
         ObjectCodec oc = jsonParser.getCodec();
         JsonNode node = oc.readTree(jsonParser);
 
