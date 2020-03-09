@@ -4,8 +4,7 @@ public class Project {
     String projectId;
     String projectName;
 
-    public Project(String projectId, String projectName)
-    {
+    public Project(String projectId, String projectName) {
         this.projectId = projectId;
         this.projectName = projectName;
     }

@@ -1,6 +1,8 @@
 package app.Entities.Priority;
 
 import app.DB.PostgreConnector;
+import app.Entities.Issue.IssueDao;
+import app.Util.MyLogger;
 import org.eclipse.jetty.util.StringUtil;
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -9,6 +11,8 @@ import java.util.ArrayList;
 import static app.DB.Query.SELECT_TABLE_PRIORITY;
 
 public class PriorityDao {
+    private static MyLogger logger = MyLogger.getLogger(PriorityDao.class);
+
     public static ArrayList<Priority> getPriority() throws SQLException {
         ArrayList<Priority> priority = new ArrayList<Priority>();
         Connection connection = PostgreConnector.createConnection();

@@ -17,7 +17,7 @@ public class Comment {
         this.timestamp = timestamp;
     }
 
-    public Comment(String userId, String text){
+    public Comment(String userId, String text) {
         this.userId = userId;
         this.text = text;
     }

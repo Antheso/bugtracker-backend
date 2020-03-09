@@ -4,8 +4,7 @@ public class Status {
     String statusId;
     String statusName;
 
-    public Status(String statusId, String statusName)
-    {
+    public Status(String statusId, String statusName) {
         this.statusId = statusId;
         this.statusName = statusName;
     }

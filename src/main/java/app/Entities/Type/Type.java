@@ -4,8 +4,7 @@ public class Type {
     String typeId;
     String typeName;
 
-    public Type(String typeId, String typeName)
-    {
+    public Type(String typeId, String typeName) {
         this.typeId = typeId;
         this.typeName = typeName;
     }

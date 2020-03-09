@@ -43,12 +43,12 @@ public class Query {
 
     public static String INSERT_ISSUE_PARAMS
         = INSERT("Issue")
-                .append("(summary, description, priority_id, status_id, project_id, assigne_id, author_id) VALUES(?, ?, ?, ?, ?, ?, ?)")
+                .append("(summary, description, priority_id, status_id, project_id, assignee_id, author_id) VALUES(?, ?, ?, ?, ?, ?, ?)")
                 .toString();
 
     public static String UPDATE_ISSUE_BY_ID
         = UPDATE("Issue")
-            .append("summary=?, description=?, priority_id=?, status_id=?, project_id=?, assigne_id=? WHERE issue_id=?")
+            .append("summary=?, description=?, priority_id=?, status_id=?, project_id=?, assignee_id=? WHERE issue_id=?")
             .toString();
 
     public static String DELETE_ISSUE_BY_ID

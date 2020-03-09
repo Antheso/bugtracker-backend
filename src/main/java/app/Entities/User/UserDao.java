@@ -1,12 +1,16 @@
 package app.Entities.User;
 
 import app.DB.PostgreConnector;
+import app.Entities.Type.TypeDao;
+import app.Util.MyLogger;
 import org.eclipse.jetty.util.StringUtil;
 import java.sql.*;
 import java.util.ArrayList;
 import static app.DB.Query.*;
 
 public class UserDao {
+    private static MyLogger logger = MyLogger.getLogger(TypeDao.class);
+
     public static ArrayList<User> getUsers() throws SQLException {
         ArrayList<User> users = new ArrayList<User>();
         Connection connection = PostgreConnector.createConnection();
@@ -28,7 +32,7 @@ public class UserDao {
         }
         catch (SQLException e)
         {
-            e.printStackTrace();
+            logger.error(e);
         }
         finally
         {
@@ -60,7 +64,7 @@ public class UserDao {
         }
         catch (SQLException e)
         {
-            e.printStackTrace();
+            logger.error(e);
         }
         finally
         {

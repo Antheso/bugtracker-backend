@@ -4,6 +4,7 @@ import app.Entities.Project.Project;
 import app.Entities.User.User;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
@@ -33,44 +34,20 @@ public class Issue {
     @JsonInclude(NON_NULL)
     User author;
 
-    public Issue(String issueId, String summary)
-    {
+    public Issue(String issueId, String summary) {
         this.id = issueId;
         this.summary = summary;
     }
 
-//    public Issue(
-//        String issueId,
-//        String summary,
-//        String description,
-//        String priorityId,
-//        String statusId,
-//        String projectId,
-//        String assigneeId,
-//        String authorId
-//    )
-//    {
-//        this.id = issueId;
-//        this.summary = summary;
-//        this.description = description;
-//        this.priorityId = priorityId;
-//        this.statusId = statusId;
-//        this.project = new Project(projectId, null);
-//        this.assignee = new User(assigneeId, null);
-//        this.author = new User(authorId, null);
-//    }
-
-    public Issue(
-        String issueId,
-        String summary,
-        String description,
-        String priorityId,
-        String statusId,
-        Project project,
-        User assignee,
-        User author
-    )
-    {
+    public Issue(String issueId,
+                 String summary,
+                 String description,
+                 String priorityId,
+                 String statusId,
+                 Project project,
+                 User assignee,
+                 User author
+    ) {
         this.id = issueId;
         this.summary = summary;
         this.description = description;

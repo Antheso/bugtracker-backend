@@ -1,10 +1,14 @@
 package app.DB;
 
 import app.Util.Configuration;
+import app.Util.MyLogger;
+
 import java.sql.*;
 import java.util.Properties;
 
 public class PostgreConnector {
+    private static MyLogger logger = MyLogger.getLogger(PostgreConnector.class);
+
     static Properties properties = Configuration.properties;
 
     //  Database credentials
@@ -21,14 +25,13 @@ public class PostgreConnector {
         return connection.prepareStatement(query);
     }
 
-    public static Connection createConnection()
-    {
+    public static Connection createConnection() {
         try {
             Connection connection = DriverManager.getConnection(DB_URL, USER, PASS);
 //            connection.setAutoCommit(false);
             return connection;
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error(e);
         }
         return null;
     }

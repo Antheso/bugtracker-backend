@@ -13,12 +13,15 @@ import app.Security.JWTAccessManager;
 import app.Security.JWTProvider;
 import app.Security.JavalinJWT;
 import app.Entities.User.UserProvider;
+import app.Util.Configuration;
+import app.Util.MyLogger;
 import app.Util.Path;
 import app.Util.Response;
 import io.javalin.Javalin;
 import io.javalin.core.security.Role;
 import io.javalin.http.Handler;
 import java.util.*;
+
 import static io.javalin.apibuilder.ApiBuilder.*;
 
 public class JavalinManager {
@@ -27,6 +30,9 @@ public class JavalinManager {
     public static JWTProvider provider;
     public static Map<String, User> tokenStorage;
     public static Javalin app;
+    public static JWTAccessManager accessManager;
+
+    private static MyLogger logger = MyLogger.getLogger(JavalinManager.class);
 
     public static void start(Javalin app) {
         JavalinManager.app = app;
@@ -37,18 +43,19 @@ public class JavalinManager {
             put("guest", Roles.GUEST);
         }};
 
-        JWTAccessManager accessManager = new JWTAccessManager("level", rolesMapping, Roles.ANYONE);
-
+        accessManager = new JWTAccessManager("level", rolesMapping, Roles.ANYONE);
         provider = UserProvider.createHMAC512();
         decodeHandler = JavalinJWT.createCookieDecodeHandler(provider);
         tokenStorage = new HashMap<String, User>();
 
         app.config.accessManager(accessManager);
         app.routes(JavalinManager::addEndpoints);
+
+        logger.info("Start Javalin Manager");
     }
 
-    public static JavalinManager getInstance(){
-        if(instance == null){
+    public static JavalinManager getInstance() {
+        if (instance == null) {
             instance = new JavalinManager();
         }
         return instance;
@@ -58,11 +65,11 @@ public class JavalinManager {
         app.before(decodeHandler);
 
         app.exception(Exception.class, (e, ctx) -> {
-            e.printStackTrace();
-            ctx.json(new Response(false, e));
+            String exceptionDetails = logger.errorWithOutString(e);
+            ctx.json(new Response(false, exceptionDetails));
         });
 
-        get(Path.Web.ISSUE, IssueController.fetchAllIssue, new HashSet<>(Arrays.asList(Roles.ANYONE,Roles.ADMIN)));
+        get(Path.Web.ISSUE, IssueController.fetchAllIssue, new HashSet<>(Arrays.asList(Roles.ANYONE, Roles.ADMIN)));
 
         get(Path.Web.ONE_ISSUE, IssueController.fetchIssueByID, Collections.singleton(Roles.ANYONE));
         post(Path.Web.ISSUE, IssueController.insertIssue, Collections.singleton(Roles.ANYONE));
