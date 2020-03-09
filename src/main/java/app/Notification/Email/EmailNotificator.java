@@ -36,21 +36,26 @@ public class EmailNotificator {
     }
 
     private String readEmailTextTemplate(String filename) {
+        // todo: чтение шаблонного письма из файла шаблонов (resources/templates/email/)
+        // на будущее
         return "";
     }
 
     public void notifyEmailConfirmation(String receiverEmail, String url) {
-        Email email = new Email("", "", "", receiverEmail);
+        String text = String.format("Please, confirm your email using this link: %s", url);
+        Email email = new Email("Email Confirmation", text, username, receiverEmail);
         emailSender.send(email);
     }
 
     public void notifyCompleteRegistration(String receiverEmail, String url) {
-        Email email = new Email("", "", "", receiverEmail);
+        String text = String.format("To complete registration click on this link: %s", url);
+        Email email = new Email("Complete Registration", text, username, receiverEmail);
         emailSender.send(email);
     }
 
     public void notifyPasswordReset(String receiverEmail, String url) {
-        Email email = new Email("", "", "", receiverEmail);
+        String text = String.format("To recover your password click on this link: %s", url);
+        Email email = new Email("Password Reset", text, username, receiverEmail);
         emailSender.send(email);
     }
 
