@@ -51,10 +51,10 @@ public class IssueDao {
                 String summary = resultSet.getString("summary");
                 String description = resultSet.getString("description");
                 Project project = new Project(resultSet.getString("project_id"), null);
-                User assigne = new User(resultSet.getString("assigne_id"), null);
+                User assignee = new User(resultSet.getString("assigne_id"), null);
                 User author = new User(resultSet.getString("author_id"), null);
 
-                issues.add(new Issue(issueId, summary, description, priorityId, statusId, project, assigne, author));
+                issues.add(new Issue(issueId, summary, description, priorityId, statusId, project, assignee, author));
             }
         } catch (SQLException ex) {
             logger.error(ex);
@@ -100,7 +100,7 @@ public class IssueDao {
                                   String priorityId,
                                   String statusId,
                                   String projectId,
-                                  String assigneId
+                                  String assigneeId
     ) throws SQLException {
         Connection connection = PostgreConnector.createConnection();
         try {
@@ -111,7 +111,7 @@ public class IssueDao {
             statement.setInt(3, Integer.parseInt(priorityId));
             statement.setInt(4, Integer.parseInt(statusId));
             statement.setObject(5, UUID.fromString(projectId));
-            statement.setObject(6, UUID.fromString(assigneId));
+            statement.setObject(6, UUID.fromString(assigneeId));
             statement.setObject(7, UUID.fromString(id));
 
             return statement.executeUpdate();
