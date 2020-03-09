@@ -51,7 +51,7 @@ public class IssueDao {
                 String summary = resultSet.getString("summary");
                 String description = resultSet.getString("description");
                 Project project = new Project(resultSet.getString("project_id"), null);
-                User assignee = new User(resultSet.getString("assigne_id"), null);
+                User assignee = new User(resultSet.getString("assignee_id"), null);
                 User author = new User(resultSet.getString("author_id"), null);
 
                 issues.add(new Issue(issueId, summary, description, priorityId, statusId, project, assignee, author));
