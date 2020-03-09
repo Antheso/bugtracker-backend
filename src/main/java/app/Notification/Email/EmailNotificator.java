@@ -1,11 +1,15 @@
 package app.Notification.Email;
 
+import app.Util.MyLogger;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Objects;
 import java.util.Properties;
 
 public class EmailNotificator {
+    private static final MyLogger log = MyLogger.getLogger(EmailNotificator.class);
+
     private String username = "";
     private String password = "";
 
@@ -27,8 +31,7 @@ public class EmailNotificator {
                 password = emailProperties.getProperty("password");
             }
         } catch (IOException e) {
-            System.out.print("Error reading email properties: ");
-            e.printStackTrace();
+            log.error(e);
         }
     }
 

@@ -1,11 +1,15 @@
 package app.Notification.Email;
 
+import app.Util.MyLogger;
+
 import javax.mail.*;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 import java.util.Properties;
 
 class EmailSender {
+    private static final MyLogger log = MyLogger.getLogger(EmailSender.class);
+
     private String username;
     private String password;
     private Properties properties;
@@ -36,8 +40,7 @@ class EmailSender {
             message.setText(email.getText());
             Transport.send(message);
         } catch (MessagingException e) {
-            System.out.printf("Error sending message: %s\n", e.getMessage());
-            // todo: система эксепшенов внутри проекта и(или) логгирование
+            log.error(e);
         }
     }
 }
