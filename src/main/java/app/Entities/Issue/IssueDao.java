@@ -22,14 +22,18 @@ public class IssueDao {
         ArrayList<Issue> issues = new ArrayList<Issue>();
         Connection connection = PostgreConnector.createConnection();
         try {
-            ResultSet resultSet = PostgreConnector.executeSQL(connection, SELECT_TABLE_INFO_ISSUES);
+            String d = SELECT_TABLE_INFO_ISSUES;
+            ResultSet resultSet = PostgreConnector.executeSQL(connection, d);
 
             while (resultSet.next()) {
                 String issueId = resultSet.getString("issue_id");
                 String summary = resultSet.getString("summary");
+                String number = resultSet.getString("number");
 
-                if (!StringUtil.isEmpty(issueId) && !StringUtil.isEmpty(summary))
-                    issues.add(new Issue(issueId, summary));
+                if (!StringUtil.isEmpty(issueId) && !StringUtil.isEmpty(summary) &&
+                    !StringUtil.isEmpty(number)){
+                    issues.add(new Issue(issueId, summary, number));
+                }
             }
         } catch (SQLException ex) {
             logger.error(ex);
@@ -43,18 +47,25 @@ public class IssueDao {
         ArrayList<Issue> issues = new ArrayList<Issue>();
         Connection connection = PostgreConnector.createConnection();
         try {
-            ResultSet resultSet = PostgreConnector.executeSQL(connection, SELECT_ISSUE_BY_ID(id));
+            String d = SELECT_ISSUE_BY_ID(id);
+            ResultSet resultSet = PostgreConnector.executeSQL(connection, d);
             while (resultSet.next()) {
                 String statusId = resultSet.getString("status_id");
+                String typeId = resultSet.getString("type_id");
                 String priorityId = resultSet.getString("priority_id");
                 String issueId = resultSet.getString("issue_id");
                 String summary = resultSet.getString("summary");
+                String number = resultSet.getString("number");
                 String description = resultSet.getString("description");
-                Project project = new Project(resultSet.getString("project_id"), null);
-                User assignee = new User(resultSet.getString("assignee_id"), null);
-                User author = new User(resultSet.getString("author_id"), null);
 
-                issues.add(new Issue(issueId, summary, description, priorityId, statusId, project, assignee, author));
+                String project_id = resultSet.getString("project_id");
+                String project_name = resultSet.getString("project_name");
+
+                Project project = new Project(project_id, project_name);
+                User assignee = new User(resultSet.getString("assignee_id"), resultSet.getString("assignee_name"));
+                User author = new User(resultSet.getString("author_id"), resultSet.getString("author_name"));
+
+                issues.add(new Issue(issueId, summary, description, priorityId, typeId, statusId, project_id + "-" + number, project, assignee, author));
             }
         } catch (SQLException ex) {
             logger.error(ex);
@@ -68,6 +79,7 @@ public class IssueDao {
     public static int addIssue(String summary,
                                String description,
                                String priorityId,
+                               String typeId,
                                String statusId,
                                String projectId,
                                String assigneId,
@@ -81,9 +93,10 @@ public class IssueDao {
             statement.setString(2, description);
             statement.setInt(3, Integer.parseInt(priorityId));
             statement.setInt(4, Integer.parseInt(statusId));
-            statement.setObject(5, UUID.fromString(projectId));
-            statement.setObject(6, UUID.fromString(assigneId));
-            statement.setObject(7, UUID.fromString(userId));
+            statement.setInt(5, Integer.parseInt(typeId));
+            statement.setObject(6, projectId);
+            statement.setObject(7, UUID.fromString(assigneId));
+            statement.setObject(8, UUID.fromString(userId));
             return statement.executeUpdate();
         } catch (SQLException ex) {
             logger.error(ex);
@@ -98,6 +111,7 @@ public class IssueDao {
                                   String summary,
                                   String description,
                                   String priorityId,
+                                  String typeId,
                                   String statusId,
                                   String projectId,
                                   String assigneeId
@@ -106,13 +120,18 @@ public class IssueDao {
         try {
             PostgreConnector.createConnection();
             PreparedStatement statement = PostgreConnector.createStatement(connection, UPDATE_ISSUE_BY_ID);
+
+            String[] parts = id.split("-");
+
             statement.setString(1, summary);
             statement.setString(2, description);
             statement.setInt(3, Integer.parseInt(priorityId));
-            statement.setInt(4, Integer.parseInt(statusId));
-            statement.setObject(5, UUID.fromString(projectId));
-            statement.setObject(6, UUID.fromString(assigneeId));
-            statement.setObject(7, UUID.fromString(id));
+            statement.setInt(4, Integer.parseInt(typeId));
+            statement.setInt(5, Integer.parseInt(statusId));
+            statement.setString(6, projectId);
+            statement.setObject(7, UUID.fromString(assigneeId));
+            statement.setString(8, parts[0]);
+            statement.setLong(9, Long.parseLong(parts[1]));
 
             return statement.executeUpdate();
         } catch (SQLException ex) {
