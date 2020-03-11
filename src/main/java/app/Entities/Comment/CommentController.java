@@ -3,6 +3,7 @@ package app.Entities.Comment;
 import app.Util.Response;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.javalin.http.Handler;
+
 import java.util.ArrayList;
 
 public class CommentController {
@@ -21,8 +22,9 @@ public class CommentController {
 
         int insertRow = CommentDao.addComment(
                 comment.getText(),
-                comment.getUserId(),
-                comment.getIssueId()
+                comment.getUser().getUserId(),
+                comment.getIssueId(),
+                comment.getTimestamp()
         );
         if (insertRow > 0)
             ctx.json(new Response(true, comment));

@@ -1,12 +1,12 @@
 package app.Entities.Comment;
 
 import app.DB.PostgreConnector;
+import app.Entities.User.User;
+import app.Entities.User.UserDao;
 import app.Util.MyLogger;
 import org.eclipse.jetty.util.StringUtil;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.UUID;
 
@@ -20,14 +20,21 @@ public class CommentDao {
         ArrayList<Comment> comments = new ArrayList<Comment>();
         Connection connection = PostgreConnector.createConnection();
         try {
+            String d = SELECT_COMMENT_BY_ISSUE_ID(id);
             ResultSet resultSet = PostgreConnector.executeSQL(connection, SELECT_COMMENT_BY_ISSUE_ID(id));
 
             while (resultSet.next()) {
-                String user_id = resultSet.getString("user_id");
+                String comment_id = resultSet.getString("comment_id");
+                String userId = resultSet.getString("user_id");
+                String userName = resultSet.getString("name");
                 String text = resultSet.getString("text");
+                long timestamp = Long.parseLong(resultSet.getString("timestamp"));
+                User tempUser = new User(userId, userName);
 
-                if (!StringUtil.isEmpty(user_id) && !StringUtil.isEmpty(text))
-                    comments.add(new Comment(user_id, text));
+                if (!StringUtil.isEmpty(userName) && !StringUtil.isEmpty(text) && !StringUtil.isEmpty(comment_id)
+                        && timestamp > 0 ){
+                    comments.add(new Comment(id, comment_id, text, tempUser, timestamp));
+                }
             }
         } catch (SQLException ex) {
             logger.error(ex);
@@ -42,7 +49,8 @@ public class CommentDao {
             (
                     String text,
                     String userId,
-                    String issueId
+                    String issueId,
+                    long timestamp
             ) throws SQLException {
         Connection connection = PostgreConnector.createConnection();
         try {
@@ -50,6 +58,7 @@ public class CommentDao {
             preparedStatement.setString(1, text);
             preparedStatement.setObject(2, UUID.fromString(issueId));
             preparedStatement.setObject(3, UUID.fromString(userId));
+            preparedStatement.setLong(4, timestamp);
             return preparedStatement.executeUpdate();
         } catch (SQLException ex) {
             logger.error(ex);

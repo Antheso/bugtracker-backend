@@ -1,5 +1,6 @@
 package app.Entities.Comment;
 
+import app.Entities.User.User;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.ObjectCodec;
@@ -8,6 +9,8 @@ import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.JsonNode;
 
 import java.io.IOException;
+import java.util.Calendar;
+import java.util.Date;
 
 public class CommentDeserializer extends JsonDeserializer<Comment> {
     @Override
@@ -18,8 +21,10 @@ public class CommentDeserializer extends JsonDeserializer<Comment> {
         final String issueId = node.get("issueId").asText();
         final String userId = node.get("user").get("id").asText();
         final String text = node.get("text").asText();
-        final String timestamp = node.get("timestamp").asText();
+        final long timestamp = node.get("timestamp").asLong();
 
-        return new Comment(issueId, text, userId, timestamp);
+        final User user = new User(userId, null);
+
+        return new Comment(issueId, null, text, user, timestamp);
     }
 }
