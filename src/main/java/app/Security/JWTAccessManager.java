@@ -6,9 +6,11 @@ import io.javalin.core.security.AccessManager;
 import io.javalin.core.security.Role;
 import io.javalin.http.Context;
 import io.javalin.http.Handler;
+
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+
 import static app.Javalin.JavalinManager.tokenStorage;
 
 public class JWTAccessManager implements AccessManager {
@@ -22,10 +24,8 @@ public class JWTAccessManager implements AccessManager {
         this.defaultRole = defaultRole;
     }
 
-    private boolean isAuthorized(Context context)
-    {
-        if(!JavalinJWT.containsJWT(context))
-        {
+    private boolean isAuthorized(Context context) {
+        if (!JavalinJWT.containsJWT(context)) {
             return false;
         }
 
@@ -34,10 +34,8 @@ public class JWTAccessManager implements AccessManager {
     }
 
 
-    private Role extractRole(Context context)
-    {
-        if (!JavalinJWT.containsJWT(context))
-        {
+    private Role extractRole(Context context) {
+        if (!JavalinJWT.containsJWT(context)) {
             return defaultRole;
         }
 
@@ -52,8 +50,7 @@ public class JWTAccessManager implements AccessManager {
 //            System.out.println("IS autorization");
 //        }
 
-        if(userLevel.contains("0"))
-        {
+        if (userLevel.contains("0")) {
             defaultRole = Roles.ADMIN;
         }
 

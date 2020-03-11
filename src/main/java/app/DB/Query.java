@@ -46,6 +46,11 @@ public class Query {
                 .append("(summary, description, priority_id, status_id, project_id, assignee_id, author_id) VALUES(?, ?, ?, ?, ?, ?, ?)")
                 .toString();
 
+    public static String INSERT_USER_PARAMS
+            = INSERT("User")
+            .append("(name, last_name, login, password) VALUES(?, ?, ?, ?)")
+            .toString();
+
     public static String UPDATE_ISSUE_BY_ID
         = UPDATE("Issue")
             .append("summary=?, description=?, priority_id=?, status_id=?, project_id=?, assignee_id=? WHERE issue_id=?")
