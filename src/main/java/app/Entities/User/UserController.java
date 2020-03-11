@@ -66,7 +66,8 @@ public class UserController {
                     user.getName(),
                     user.getLastName(),
                     user.getLoginName(),
-                    user.getPassword()
+                    user.getPassword(),
+                    user.getEmail()
             );
         } else {
             throw new Exception("Insert user failed");

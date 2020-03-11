@@ -48,7 +48,7 @@ public class Query {
 
     public static String INSERT_USER_PARAMS
             = INSERT("User")
-            .append("(name, last_name, login, password) VALUES(?, ?, ?, ?)")
+            .append("(name, last_name, login, password, email) VALUES(?, ?, ?, ?, ?)")
             .toString();
 
     public static String UPDATE_ISSUE_BY_ID

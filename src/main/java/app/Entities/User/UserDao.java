@@ -108,7 +108,7 @@ public class UserDao {
     }
 
     public static int addUser(String firstName, String lastName,
-                              String login, String password) throws SQLException {
+                              String login, String password, String email) throws SQLException {
         Connection connection = PostgreConnector.createConnection();
         try {
             PostgreConnector.createConnection();
@@ -117,6 +117,7 @@ public class UserDao {
             statement.setString(2, lastName);
             statement.setString(3, login);
             statement.setString(4, password);
+            statement.setString(5, email);
 
             return statement.executeUpdate();
         } catch (SQLException ex) {

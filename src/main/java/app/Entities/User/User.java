@@ -22,6 +22,8 @@ public class User {
     private String roleId;
     @JsonInclude(NON_NULL)
     private String password;
+    @JsonInclude(NON_NULL)
+    private String email;
 
     public User(String userId, String name) {
         this.name = name;
@@ -35,11 +37,12 @@ public class User {
         this.name = name;
     }
 
-    public User(String login, String password, String firstName, String lastName, Object o) {
+    public User(String login, String password, String firstName, String lastName, String email) {
         this.loginName = login;
         this.password = password;
         this.name = firstName;
         this.lastName = lastName;
+        this.email = email;
     }
 
     public String getName() {
@@ -92,6 +95,14 @@ public class User {
 
     public Role roleGet() {
         return Roles.values()[Integer.parseInt(getRoleId())];
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     @Override

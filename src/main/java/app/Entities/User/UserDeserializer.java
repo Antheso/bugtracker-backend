@@ -19,7 +19,9 @@ public class UserDeserializer extends JsonDeserializer<User> {
         final String password = node.get("password").asText();
         final String firstName = node.get("firstName").asText();
         final String lastName = node.get("lastName").asText();
+        final String email = node.get("email").asText();
 
-        return new User(login, password, firstName, lastName, null);
+
+        return new User(login, password, firstName, lastName, email);
     }
 }
