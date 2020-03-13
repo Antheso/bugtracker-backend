@@ -14,7 +14,7 @@ import static app.Javalin.JavalinManager.tokenStorage;
 public class IssueController {
     public static Handler fetchAllIssue = ctx -> {
         ArrayList<Issue> data = IssueDao.getTableIssue();
-        if (data != null && data.size() > 0)
+        if (!data.isEmpty())
             ctx.json(new Response(true, data));
         else {
             throw new Exception("Select issue failed");
@@ -31,15 +31,15 @@ public class IssueController {
     };
 
     public static Handler insertIssue = ctx -> {
-        int inserRow = 0;
         ObjectMapper om = new ObjectMapper();
         Issue issue = om.readValue(ctx.body(), Issue.class);
 
         DecodedJWT jwt = JavalinJWT.getDecodedFromContext(ctx);
         User author = jwt != null ? tokenStorage.get(jwt.getToken()) : null;
 
+        int insertRow = 0;
         if (author != null) {
-            inserRow = IssueDao.addIssue(
+            insertRow = IssueDao.addIssue(
                     issue.getSummary(),
                     issue.getDescription(),
                     issue.getPriorityId(),
@@ -52,7 +52,7 @@ public class IssueController {
             throw new Exception("Insert issue failed");
         }
 
-        if (inserRow > 0) {
+        if (insertRow > 0) {
             ctx.json(new Response(true, issue));
         } else {
             throw new Exception("Insert issue failed");
@@ -61,7 +61,6 @@ public class IssueController {
 
     public static Handler updateIssue = ctx -> {
         ObjectMapper om = new ObjectMapper();
-
         Issue issue = om.readValue(ctx.body(), Issue.class);
         int updateRow = IssueDao.updateIssue(
                 ctx.pathParam("id"),
@@ -73,9 +72,9 @@ public class IssueController {
                 issue.getAssignee().getUserId()
         );
 
-        if (updateRow > 0)
+        if (updateRow > 0) {
             ctx.json(new Response(true, issue));
-        else {
+        } else {
             throw new Exception("Update issue failed");
         }
     };
