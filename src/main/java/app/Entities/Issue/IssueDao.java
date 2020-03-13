@@ -70,7 +70,7 @@ public class IssueDao {
                                String priorityId,
                                String statusId,
                                String projectId,
-                               String assigneId,
+                               String assigneeId,
                                String userId
     ) throws SQLException {
         Connection connection = PostgreConnector.createConnection();
@@ -82,7 +82,7 @@ public class IssueDao {
             statement.setInt(3, Integer.parseInt(priorityId));
             statement.setInt(4, Integer.parseInt(statusId));
             statement.setObject(5, UUID.fromString(projectId));
-            statement.setObject(6, UUID.fromString(assigneId));
+            statement.setObject(6, UUID.fromString(assigneeId));
             statement.setObject(7, UUID.fromString(userId));
             return statement.executeUpdate();
         } catch (SQLException ex) {

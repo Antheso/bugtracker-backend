@@ -5,9 +5,6 @@ import app.Entities.User.User;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
-
 import static com.fasterxml.jackson.annotation.JsonInclude.Include.*;
 
 
@@ -24,7 +21,7 @@ public class Issue {
     @JsonInclude(NON_NULL)
     String description;
     @JsonInclude(NON_NULL)
-    String assigneId;
+    String assigneeId;
     @JsonInclude(NON_NULL)
     String projectId;
     @JsonInclude(NON_NULL)
@@ -106,12 +103,12 @@ public class Issue {
         this.description = description;
     }
 
-    public String getAssigneId() {
-        return assigneId;
+    public String getAssigneeId() {
+        return assigneeId;
     }
 
-    public void setAssigneId(String assigneId) {
-        this.assigneId = assigneId;
+    public void setAssigneeId(String assigneeId) {
+        this.assigneeId = assigneeId;
     }
 
     public String getProjectId() {
@@ -146,7 +143,7 @@ public class Issue {
                 ", priorityId='" + priorityId + '\'' +
                 ", summary='" + summary + '\'' +
                 ", description='" + description + '\'' +
-                ", assigneId='" + assigneId + '\'' +
+                ", assigneeId='" + assigneeId + '\'' +
                 ", projectId='" + projectId + '\'' +
                 ", project=" + project +
                 ", assignee=" + assignee +
