@@ -66,7 +66,7 @@ public class JavalinManager {
 
         app.exception(Exception.class, (e, ctx) -> {
             String exceptionDetails = logger.errorWithOutString(e);
-//            ctx.status(500);
+            ctx.status(500);
             ctx.json(new Response(false, exceptionDetails));
         });
 
