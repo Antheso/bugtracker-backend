@@ -9,7 +9,7 @@ public class TypeController {
     public static Handler fetchAllType = ctx -> {
         ArrayList<Type> typeData = TypeDao.getTypes();
         if (typeData != null) {
-            ctx.json(new Response(true, typeData));
+            ctx.json(new Response(Response.Status.OK, typeData));
         } else {
             throw new Exception("Type not found");
         }

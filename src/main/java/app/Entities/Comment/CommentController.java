@@ -9,7 +9,7 @@ public class CommentController {
     public static Handler fetchAllComment = ctx -> {
         ArrayList<Comment> data = CommentDao.getComments(ctx.pathParam("issueId"));
         if (data != null) {
-            ctx.json(new Response(true, data));
+            ctx.json(new Response(Response.Status.OK, data));
         } else {
             throw new Exception("Comment not found");
         }
@@ -25,7 +25,7 @@ public class CommentController {
                 comment.getIssueId()
         );
         if (insertRow > 0)
-            ctx.json(new Response(true, comment));
+            ctx.json(new Response(Response.Status.OK, comment));
         else {
             throw new Exception("Comment not Added");
         }

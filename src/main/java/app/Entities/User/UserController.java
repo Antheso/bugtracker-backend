@@ -9,7 +9,7 @@ public class UserController {
     public static Handler fetchAllUser = ctx -> {
         ArrayList<User> userData = UserDao.getUsers();
         if (userData != null) {
-            ctx.json(new Response(true, userData));
+            ctx.json(new Response(Response.Status.OK, userData));
         } else {
             throw new Exception("User not found");
         }

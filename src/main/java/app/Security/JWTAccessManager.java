@@ -24,26 +24,19 @@ public class JWTAccessManager implements AccessManager {
 
     private boolean isAuthorized(Context context)
     {
-        if(!JavalinJWT.containsJWT(context))
-        {
-            return false;
+        if (JavalinJWT.containsJWT(context)) {
+            DecodedJWT jwt = JavalinJWT.getDecodedFromContext(context);
+            return tokenStorage.get(jwt.getToken()) == null;
         }
-
-        DecodedJWT jwt = JavalinJWT.getDecodedFromContext(context);
-        return tokenStorage.get(jwt.getToken()) == null;
+        return false;
     }
 
 
-    private Role extractRole(Context context)
-    {
-        if (!JavalinJWT.containsJWT(context))
-        {
-            return defaultRole;
-        }
-
-        DecodedJWT jwt = JavalinJWT.getDecodedFromContext(context);
-        String userLevel = jwt.getClaim("roleId").asString();
-        context.result(userLevel);
+    private Role extractRole(Context context) {
+        if (JavalinJWT.containsJWT(context)) {
+            DecodedJWT jwt = JavalinJWT.getDecodedFromContext(context);
+            String userLevel = jwt.getClaim("roleId").asString();
+            context.result(userLevel);
 
 //Experemental
 //        String token = jwt.getToken();
@@ -52,12 +45,14 @@ public class JWTAccessManager implements AccessManager {
 //            System.out.println("IS autorization");
 //        }
 
-        if(userLevel.contains("0"))
-        {
-            defaultRole = Roles.ADMIN;
+            if (userLevel.contains("0")) {
+                defaultRole = Roles.ADMIN;
+            }
+
+            return Optional.ofNullable(rolesMapping.get(userLevel)).orElse(defaultRole);
         }
 
-        return Optional.ofNullable(rolesMapping.get(userLevel)).orElse(defaultRole);
+        return defaultRole;
     }
 
     @Override

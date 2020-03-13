@@ -15,7 +15,7 @@ public class IssueController {
     public static Handler fetchAllIssue = ctx -> {
         ArrayList<Issue> data = IssueDao.getTableIssue();
         if (!data.isEmpty())
-            ctx.json(new Response(true, data));
+            ctx.json(new Response(Response.Status.OK, data));
         else {
             throw new Exception("Select issue failed");
         }
@@ -24,7 +24,7 @@ public class IssueController {
     public static Handler fetchIssueByID = ctx -> {
         Issue tempIssue = IssueDao.getIssueByID(ctx.pathParam("id"));
         if (tempIssue != null) {
-            ctx.json(new Response(true, tempIssue));
+            ctx.json(new Response(Response.Status.OK, tempIssue));
         } else {
             throw new Exception("Issue not found");
         }
@@ -53,7 +53,7 @@ public class IssueController {
         }
 
         if (insertRow > 0) {
-            ctx.json(new Response(true, issue));
+            ctx.json(new Response(Response.Status.OK, issue));
         } else {
             throw new Exception("Insert issue failed");
         }
@@ -73,7 +73,7 @@ public class IssueController {
         );
 
         if (updateRow > 0) {
-            ctx.json(new Response(true, issue));
+            ctx.json(new Response(Response.Status.OK, issue));
         } else {
             throw new Exception("Update issue failed");
         }
@@ -82,7 +82,7 @@ public class IssueController {
     public static Handler deleteIssue = ctx -> {
         int deleteRow = IssueDao.deleteIssue(ctx.pathParam("id"));
         if (deleteRow > 0) {
-            ctx.json(new Response(true, "delete"));
+            ctx.json(new Response(Response.Status.OK, "delete"));
         } else {
             throw new Exception("Delete issue failed");
         }

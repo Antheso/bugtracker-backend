@@ -9,7 +9,7 @@ public class ProjectController {
     public static Handler fetchAllProject = ctx -> {
         ArrayList<Project> projectData = ProjectDao.getProjects();
         if (projectData != null) {
-            ctx.json(new Response(true, projectData));
+            ctx.json(new Response(Response.Status.OK, projectData));
         } else {
             throw new Exception("Project not found");
         }
