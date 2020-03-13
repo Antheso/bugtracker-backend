@@ -14,8 +14,8 @@ import java.io.IOException;
 public class IssueDeserializer extends JsonDeserializer<Issue> {
     @Override
     public Issue deserialize(JsonParser jsonParser, DeserializationContext deserializationContext) throws IOException, JsonProcessingException {
-        ObjectCodec oc = jsonParser.getCodec();
-        JsonNode node = oc.readTree(jsonParser);
+        ObjectCodec codec = jsonParser.getCodec();
+        JsonNode node = codec.readTree(jsonParser);
 
         final String projectId = node.get("project").get("projectId").asText();
 //        final String projectName = node.get("project").get("name").asText();
@@ -31,8 +31,6 @@ public class IssueDeserializer extends JsonDeserializer<Issue> {
         final String statusId = node.get("statusId").asText();
 
         Project project = new Project(projectId, null);
-        project.setProjectId(projectId);
-
         User assignee = new User(assigneeId, assigneeName);
 //        User author = new User(authorId, authorName);
 
