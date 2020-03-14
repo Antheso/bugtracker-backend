@@ -13,10 +13,12 @@ public class NotificationType {
             }
         },
 
-        CONFIRM_REGISTRATION("") {
+        COMPLETE_REGISTRATION("USER | You have successfully registered!") {
             @Override
             public String generateText(User user) {
-                return null;
+                // todo: ссылка для подтверждение регистрации, почты и тд
+                return String.format("Now you have to complete the registration, %s",
+                        user.getName());
             }
         },
 

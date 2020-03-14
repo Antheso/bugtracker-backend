@@ -1,6 +1,8 @@
 package app.Entities.User;
 
 import app.Javalin.JavalinManager;
+import app.Notification.Email.EmailNotificator;
+import app.Notification.NotificationType;
 import app.Security.JavalinJWT;
 import app.Util.Response;
 import com.auth0.jwt.interfaces.DecodedJWT;
@@ -13,6 +15,8 @@ import java.util.ArrayList;
 import static app.Javalin.JavalinManager.tokenStorage;
 
 public class UserController {
+    private static EmailNotificator emailNotificator = new EmailNotificator();
+
     public static Handler fetchAllUser = ctx -> {
         ArrayList<User> userData = UserDao.getUsers();
         ctx.json(new Response(Response.Status.OK, userData));
@@ -59,8 +63,7 @@ public class UserController {
             throw new Exception("Insert user failed");
         }
 
-        int insertRow = 0;
-        insertRow = UserDao.addUser(
+        int insertRow = UserDao.addUser(
                 user.getName(),
                 user.getLastName(),
                 user.getLoginName(),
@@ -72,5 +75,9 @@ public class UserController {
         }
 
         ctx.json(new Response(Response.Status.OK, user));
+
+        emailNotificator.sendUserNotification(user,
+                NotificationType.UserNotification.COMPLETE_REGISTRATION,
+                user.getEmail());
     };
 }
