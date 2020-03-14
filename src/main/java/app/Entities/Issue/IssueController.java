@@ -43,6 +43,7 @@ public class IssueController {
                     issue.getSummary(),
                     issue.getDescription(),
                     issue.getPriorityId(),
+                    issue.getTypeId(),
                     issue.getStatusId(),
                     issue.getProject().getProjectId(),
                     issue.getAssignee().getUserId(),
@@ -68,6 +69,7 @@ public class IssueController {
                 issue.getSummary(),
                 issue.getDescription(),
                 issue.getPriorityId(),
+                issue.getTypeId(),
                 issue.getStatusId(),
                 issue.getProject().getProjectId(),
                 issue.getAssignee().getUserId()

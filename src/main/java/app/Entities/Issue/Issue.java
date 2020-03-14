@@ -5,11 +5,7 @@ import app.Entities.User.User;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
-
 import static com.fasterxml.jackson.annotation.JsonInclude.Include.*;
-
 
 @JsonDeserialize(using = IssueDeserializer.class)
 public class Issue {
@@ -20,13 +16,13 @@ public class Issue {
     @JsonInclude(NON_NULL)
     String priorityId;
     @JsonInclude(NON_NULL)
+    String typeId;
+    @JsonInclude(NON_NULL)
     String summary;
     @JsonInclude(NON_NULL)
     String description;
     @JsonInclude(NON_NULL)
-    String assigneId;
-    @JsonInclude(NON_NULL)
-    String projectId;
+    String number;
     @JsonInclude(NON_NULL)
     Project project;
     @JsonInclude(NON_NULL)
@@ -34,16 +30,19 @@ public class Issue {
     @JsonInclude(NON_NULL)
     User author;
 
-    public Issue(String issueId, String summary) {
+    public Issue(String issueId, String summary, String number) {
         this.id = issueId;
         this.summary = summary;
+        this.number = number;
     }
 
     public Issue(String issueId,
                  String summary,
                  String description,
                  String priorityId,
+                 String typeId,
                  String statusId,
+                 String number,
                  Project project,
                  User assignee,
                  User author
@@ -52,7 +51,9 @@ public class Issue {
         this.summary = summary;
         this.description = description;
         this.priorityId = priorityId;
+        this.typeId = typeId;
         this.statusId = statusId;
+        this.number = number;
         this.project = project;
         this.assignee = assignee;
         this.author = author;
@@ -106,22 +107,6 @@ public class Issue {
         this.description = description;
     }
 
-    public String getAssigneId() {
-        return assigneId;
-    }
-
-    public void setAssigneId(String assigneId) {
-        this.assigneId = assigneId;
-    }
-
-    public String getProjectId() {
-        return projectId;
-    }
-
-    public void setProjectId(String projectId) {
-        this.projectId = projectId;
-    }
-
     public Project getProject() {
         return project;
     }
@@ -138,6 +123,22 @@ public class Issue {
         this.author = author;
     }
 
+    public String getNumber() {
+        return number;
+    }
+
+    public void setNumber(String number) {
+        this.number = number;
+    }
+
+    public String getTypeId() {
+        return typeId;
+    }
+
+    public void setTypeId(String typeId) {
+        this.typeId = typeId;
+    }
+
     @Override
     public String toString() {
         return "Issue{" +
@@ -146,8 +147,6 @@ public class Issue {
                 ", priorityId='" + priorityId + '\'' +
                 ", summary='" + summary + '\'' +
                 ", description='" + description + '\'' +
-                ", assigneId='" + assigneId + '\'' +
-                ", projectId='" + projectId + '\'' +
                 ", project=" + project +
                 ", assignee=" + assignee +
                 ", author=" + author +
