@@ -49,6 +49,7 @@ public class IssueController {
                     issue.getSummary(),
                     issue.getDescription(),
                     issue.getPriorityId(),
+                    issue.getTypeId(),
                     issue.getStatusId(),
                     issue.getProject().getProjectId(),
                     issue.getAssignee().getUserId(),
@@ -73,6 +74,7 @@ public class IssueController {
                 issue.getSummary(),
                 issue.getDescription(),
                 issue.getPriorityId(),
+                issue.getTypeId(),
                 issue.getStatusId(),
                 issue.getProject().getProjectId(),
                 issue.getAssignee().getUserId()
@@ -99,6 +101,8 @@ public class IssueController {
         ctx.json(new Response(Response.Status.OK, "delete"));
 
         Set<String> receivers = new HashSet<>();
+        receivers.add(issue.getAuthor().getEmail());
+        receivers.add(issue.getAssignee().getEmail());
         emailNotificator.sendIssueNotification(issue, NotificationType.IssueNotification.ISSUE_DELETED, receivers);
     };
 }

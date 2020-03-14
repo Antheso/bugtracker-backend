@@ -1,5 +1,6 @@
 package app.Entities.Comment;
 
+import app.Entities.User.User;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
 @JsonDeserialize(using = CommentDeserializer.class)
@@ -7,19 +8,15 @@ public class Comment {
     String commentId;
     String text;
     String issueId;
-    String userId;
-    String timestamp;
+    User user;
+    long timestamp;
 
-    public Comment(String issueId, String text, String userId, String timestamp) {
+    public Comment(String issueId, String commentId, String text, User user, long timestamp) {
         this.issueId = issueId;
+        this.commentId = commentId;
         this.text = text;
-        this.userId = userId;
+        this.user = user;
         this.timestamp = timestamp;
-    }
-
-    public Comment(String userId, String text) {
-        this.userId = userId;
-        this.text = text;
     }
 
     public String getCommentId() {
@@ -46,12 +43,20 @@ public class Comment {
         this.issueId = issueId;
     }
 
-    public String getUserId() {
-        return userId;
+    public long getTimestamp() {
+        return timestamp;
     }
 
-    public void setUserId(String userId) {
-        this.userId = userId;
+    public void setTimestamp(long timestamp) {
+        this.timestamp = timestamp;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 
     @Override
@@ -60,7 +65,6 @@ public class Comment {
                 "commentId='" + commentId + '\'' +
                 ", text='" + text + '\'' +
                 ", issueId='" + issueId + '\'' +
-                ", userId='" + userId + '\'' +
                 ", timestamp='" + timestamp + '\'' +
                 '}';
     }

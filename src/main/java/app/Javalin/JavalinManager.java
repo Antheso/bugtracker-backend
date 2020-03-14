@@ -66,6 +66,7 @@ public class JavalinManager {
 
         app.exception(Exception.class, (e, ctx) -> {
             String exceptionDetails = logger.errorWithOutString(e);
+            ctx.status(500);
             ctx.json(new Response(Response.Status.ERROR, exceptionDetails));
         });
 
@@ -83,7 +84,9 @@ public class JavalinManager {
 
         get(Path.Web.USERS, UserController.fetchAllUser, Collections.singleton(Roles.ANYONE));
 
-        post(Path.Web.LOGIN, AuthorizationController.login, Collections.singleton(Roles.ANYONE));
+        post(Path.Web.LOGIN, UserController.login, Collections.singleton(Roles.ANYONE));
+        post(Path.Web.LOGOUT, UserController.logout, Collections.singleton(Roles.ANYONE));
+        post(Path.Web.REGISTRATION, UserController.registration, Collections.singleton(Roles.ANYONE));
 
         get(Path.Web.COMMENT_BY_ISSUE, CommentController.fetchAllComment, Collections.singleton(Roles.ANYONE));
         post(Path.Web.COMMENT, CommentController.addComment, Collections.singleton(Roles.ANYONE));

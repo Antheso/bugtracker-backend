@@ -10,6 +10,8 @@ public class Path {
         public static final String TYPES = "/api/types";
         public static final String USERS = "/api/users";
         public static final String LOGIN = "/api/login";
+        public static final String LOGOUT = "/api/logout";
+        public static final String REGISTRATION = "/api/registration";
         public static final String COMMENT_BY_ISSUE = "/api/comments/:issueId";
         public static final String COMMENT = "/api/comments";
     }

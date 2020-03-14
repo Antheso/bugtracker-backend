@@ -6,9 +6,11 @@ import io.javalin.core.security.AccessManager;
 import io.javalin.core.security.Role;
 import io.javalin.http.Context;
 import io.javalin.http.Handler;
+
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+
 import static app.Javalin.JavalinManager.tokenStorage;
 
 public class JWTAccessManager implements AccessManager {
@@ -22,21 +24,24 @@ public class JWTAccessManager implements AccessManager {
         this.defaultRole = defaultRole;
     }
 
-    private boolean isAuthorized(Context context)
-    {
-        if (JavalinJWT.containsJWT(context)) {
-            DecodedJWT jwt = JavalinJWT.getDecodedFromContext(context);
-            return tokenStorage.get(jwt.getToken()) == null;
+    private boolean isAuthorized(Context context) {
+        if (!JavalinJWT.containsJWT(context)) {
+            return false;
         }
-        return false;
+
+        DecodedJWT jwt = JavalinJWT.getDecodedFromContext(context);
+        return tokenStorage.get(jwt.getToken()) == null;
     }
 
 
     private Role extractRole(Context context) {
-        if (JavalinJWT.containsJWT(context)) {
-            DecodedJWT jwt = JavalinJWT.getDecodedFromContext(context);
-            String userLevel = jwt.getClaim("roleId").asString();
-            context.result(userLevel);
+        if (!JavalinJWT.containsJWT(context)) {
+            return defaultRole;
+        }
+
+        DecodedJWT jwt = JavalinJWT.getDecodedFromContext(context);
+        String userLevel = jwt.getClaim("roleId").asString();
+        context.result(userLevel);
 
 //Experemental
 //        String token = jwt.getToken();
@@ -45,14 +50,11 @@ public class JWTAccessManager implements AccessManager {
 //            System.out.println("IS autorization");
 //        }
 
-            if (userLevel.contains("0")) {
-                defaultRole = Roles.ADMIN;
-            }
-
-            return Optional.ofNullable(rolesMapping.get(userLevel)).orElse(defaultRole);
+        if (userLevel.contains("0")) {
+            defaultRole = Roles.ADMIN;
         }
 
-        return defaultRole;
+        return Optional.ofNullable(rolesMapping.get(userLevel)).orElse(defaultRole);
     }
 
     @Override
