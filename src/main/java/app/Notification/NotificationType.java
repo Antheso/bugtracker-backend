@@ -102,7 +102,10 @@ public class NotificationType {
         NEW_COMMENT("COMMENT | New comment left") {
             @Override
             public String generateText(Comment comment) {
-                return null;
+                return String.format("Comment %s was left by %s. \n---\n\"%s\"\n---\n",
+                        comment.getCommentId(),
+                        comment.getUser(),
+                        comment.getText());
             }
         };
 
