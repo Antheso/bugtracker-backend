@@ -2,7 +2,6 @@ package app.Entities.Comment;
 
 import app.DB.PostgreConnector;
 import app.Entities.User.User;
-import app.Entities.User.UserDao;
 import app.Util.MyLogger;
 import org.eclipse.jetty.util.StringUtil;
 
@@ -20,9 +19,10 @@ public class CommentDao {
         ArrayList<Comment> comments = new ArrayList<Comment>();
         Connection connection = PostgreConnector.createConnection();
         try {
-            String d = SELECT_COMMENT_BY_ISSUE_ID(id);
-            ResultSet resultSet = PostgreConnector.executeSQL(connection, SELECT_COMMENT_BY_ISSUE_ID(id));
+            PreparedStatement preparedStatement = PostgreConnector.createStatement(connection, SELECT_COMMENT_BY_ISSUE_ID);
+            preparedStatement.setString(1, id);
 
+            ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
                 String comment_id = resultSet.getString("comment_id");
                 String userId = resultSet.getString("user_id");

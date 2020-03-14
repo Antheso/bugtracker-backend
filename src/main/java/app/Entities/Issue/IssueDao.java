@@ -22,8 +22,7 @@ public class IssueDao {
         ArrayList<Issue> issues = new ArrayList<Issue>();
         Connection connection = PostgreConnector.createConnection();
         try {
-            String d = SELECT_TABLE_INFO_ISSUES;
-            ResultSet resultSet = PostgreConnector.executeSQL(connection, d);
+            ResultSet resultSet = PostgreConnector.executeSQL(connection, SELECT_TABLE_INFO_ISSUES);
 
             while (resultSet.next()) {
                 String issueId = resultSet.getString("issue_id");
@@ -31,7 +30,7 @@ public class IssueDao {
                 String number = resultSet.getString("number");
 
                 if (!StringUtil.isEmpty(issueId) && !StringUtil.isEmpty(summary) &&
-                    !StringUtil.isEmpty(number)){
+                        !StringUtil.isEmpty(number)) {
                     issues.add(new Issue(issueId, summary, number));
                 }
             }
@@ -47,8 +46,13 @@ public class IssueDao {
         ArrayList<Issue> issues = new ArrayList<Issue>();
         Connection connection = PostgreConnector.createConnection();
         try {
-            String d = SELECT_ISSUE_BY_ID(id);
-            ResultSet resultSet = PostgreConnector.executeSQL(connection, d);
+            String[] parts = idToParts(id);
+
+            PreparedStatement preparedStatement = PostgreConnector.createStatement(connection, SELECT_ISSUE_BY_ID);
+            preparedStatement.setString(1, parts[0]);
+            preparedStatement.setString(2, parts[1]);
+
+            ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
                 String statusId = resultSet.getString("status_id");
                 String typeId = resultSet.getString("type_id");
@@ -67,7 +71,7 @@ public class IssueDao {
 
                 issues.add(new Issue(issueId, summary, description, priorityId, typeId, statusId, project_id + "-" + number, project, assignee, author));
             }
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             logger.error(ex);
         } finally {
             connection.close();
@@ -121,7 +125,7 @@ public class IssueDao {
             PostgreConnector.createConnection();
             PreparedStatement statement = PostgreConnector.createStatement(connection, UPDATE_ISSUE_BY_ID);
 
-            String[] parts = id.split("-");
+            String[] parts = idToParts(id);
 
             statement.setString(1, summary);
             statement.setString(2, description);
@@ -134,7 +138,7 @@ public class IssueDao {
             statement.setLong(9, Long.parseLong(parts[1]));
 
             return statement.executeUpdate();
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             logger.error(ex);
         } finally {
             connection.close();
@@ -146,12 +150,24 @@ public class IssueDao {
         Connection connection = PostgreConnector.createConnection();
         try {
             PostgreConnector.createConnection();
-            return PostgreConnector.createStatement(connection, DELETE_ISSUE_BY_ID(id)).executeUpdate();
-        } catch (SQLException ex) {
+            String[] parts = idToParts(id);
+            PreparedStatement preparedStatement = PostgreConnector.createStatement(connection, DELETE_ISSUE_BY_ID);
+            preparedStatement.setString(1, parts[0]);
+            preparedStatement.setString(2, parts[1]);
+            return preparedStatement.executeUpdate();
+        } catch (Exception ex) {
             logger.error(ex);
         } finally {
             connection.close();
         }
         return 0;
+    }
+
+    public static String[] idToParts(String id) throws Exception {
+        String[] parts = id.split("-");
+        if (parts.length < 2) {
+            throw new Exception("Faild id");
+        }
+        return parts;
     }
 }
