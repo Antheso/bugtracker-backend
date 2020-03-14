@@ -1,6 +1,8 @@
 package app.Entities.Issue;
 
 import app.Entities.User.User;
+import app.Notification.Email.EmailNotificator;
+import app.Notification.NotificationType;
 import app.Security.JavalinJWT;
 import app.Util.Response;
 import com.auth0.jwt.interfaces.DecodedJWT;
@@ -8,10 +10,14 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.javalin.http.Handler;
 
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 
 import static app.Javalin.JavalinManager.tokenStorage;
 
 public class IssueController {
+    private static EmailNotificator emailNotificator = new EmailNotificator();
+
     public static Handler fetchAllIssue = ctx -> {
         ArrayList<Issue> data = IssueDao.getTableIssue();
         if (!data.isEmpty())
@@ -80,11 +86,19 @@ public class IssueController {
     };
 
     public static Handler deleteIssue = ctx -> {
+        Issue issue = IssueDao.getIssueByID(ctx.pathParam("id"));
+        if (issue == null) {
+            throw new Exception("Cannot fetch issue to delete it!");
+        }
+
         int deleteRow = IssueDao.deleteIssue(ctx.pathParam("id"));
-        if (deleteRow > 0) {
-            ctx.json(new Response(Response.Status.OK, "delete"));
-        } else {
+        if (deleteRow <= 0) {
             throw new Exception("Delete issue failed");
         }
+
+        ctx.json(new Response(Response.Status.OK, "delete"));
+
+        Set<String> receivers = new HashSet<>();
+        emailNotificator.sendIssueNotification(issue, NotificationType.IssueNotification.ISSUE_DELETED, receivers);
     };
 }

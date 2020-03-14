@@ -1,11 +1,14 @@
 package app.Notification.Email;
 
+import app.Entities.Issue.Issue;
+import app.Notification.NotificationType;
 import app.Util.MyLogger;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Objects;
 import java.util.Properties;
+import java.util.Set;
 
 public class EmailNotificator {
     private static final MyLogger log = MyLogger.getLogger(EmailNotificator.class);
@@ -61,5 +64,15 @@ public class EmailNotificator {
 
     public void notifyTicketChanged(String receiverEmail, String url) {
         throw new AssertionError("Not yet implemented. (Stage 3)");
+    }
+
+    public void sendIssueNotification(Issue issue,
+                                      NotificationType.IssueNotification issueNotificationType,
+                                      Set<String> receivers) {
+        Email email = new Email(issueNotificationType.getSubject(), issueNotificationType.getText(issue), username, "");
+        for (String receiver : receivers) {
+            email.setReceiverEmail(receiver);
+            emailSender.send(email);
+        }
     }
 }
