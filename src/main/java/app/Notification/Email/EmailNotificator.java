@@ -1,6 +1,8 @@
 package app.Notification.Email;
 
+import app.Entities.Comment.Comment;
 import app.Entities.Issue.Issue;
+import app.Entities.User.User;
 import app.Notification.NotificationType;
 import app.Util.MyLogger;
 
@@ -38,38 +40,29 @@ public class EmailNotificator {
         }
     }
 
-    private String readEmailTextTemplate(String filename) {
-        // todo: чтение шаблонного письма из файла шаблонов (resources/templates/email/)
-        // на будущее
-        return "";
-    }
-
-    public void notifyEmailConfirmation(String receiverEmail, String url) {
-        String text = String.format("Please, confirm your email using this link: %s", url);
-        Email email = new Email("Email Confirmation", text, username, receiverEmail);
-        emailSender.send(email);
-    }
-
-    public void notifyCompleteRegistration(String receiverEmail, String url) {
-        String text = String.format("To complete registration click on this link: %s", url);
-        Email email = new Email("Complete Registration", text, username, receiverEmail);
-        emailSender.send(email);
-    }
-
-    public void notifyPasswordReset(String receiverEmail, String url) {
-        String text = String.format("To recover your password click on this link: %s", url);
-        Email email = new Email("Password Reset", text, username, receiverEmail);
-        emailSender.send(email);
-    }
-
-    public void notifyTicketChanged(String receiverEmail, String url) {
-        throw new AssertionError("Not yet implemented. (Stage 3)");
+    public void sendUserNotification(User user,
+                                     NotificationType.UserNotification userNotificationType,
+                                     String receiver) {
+        emailSender.send(new Email(userNotificationType.getSubject(),
+                userNotificationType.generateText(user), username, receiver));
     }
 
     public void sendIssueNotification(Issue issue,
                                       NotificationType.IssueNotification issueNotificationType,
                                       Set<String> receivers) {
-        Email email = new Email(issueNotificationType.getSubject(), issueNotificationType.getText(issue), username, "");
+        Email email = new Email(issueNotificationType.getSubject(),
+                issueNotificationType.generateText(issue), username, "");
+        for (String receiver : receivers) {
+            email.setReceiverEmail(receiver);
+            emailSender.send(email);
+        }
+    }
+
+    public void sendCommentNotification(Comment comment,
+                                        NotificationType.CommentNotification commentNotificationType,
+                                        Set<String> receivers) {
+        Email email = new Email(commentNotificationType.getSubject(),
+                commentNotificationType.generateText(comment), username, "");
         for (String receiver : receivers) {
             email.setReceiverEmail(receiver);
             emailSender.send(email);
