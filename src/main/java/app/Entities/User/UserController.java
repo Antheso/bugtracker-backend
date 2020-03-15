@@ -19,6 +19,9 @@ public class UserController {
 
     public static Handler fetchAllUser = ctx -> {
         ArrayList<User> userData = UserDao.getUsers();
+        if (userData.isEmpty()) {
+            throw new Exception("Got empty user list!");
+        }
         ctx.json(new Response(Response.Status.OK, userData));
     };
 

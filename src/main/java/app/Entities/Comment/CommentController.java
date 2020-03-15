@@ -17,6 +17,9 @@ public class CommentController {
 
     public static Handler fetchAllComment = ctx -> {
         ArrayList<Comment> data = CommentDao.getComments(ctx.pathParam("issueId"));
+        if (data.isEmpty()) {
+            throw new Exception("Got empty comments list!");
+        }
         ctx.json(new Response(Response.Status.OK, data));
     };
 
