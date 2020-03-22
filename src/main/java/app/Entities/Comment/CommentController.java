@@ -23,7 +23,7 @@ public class CommentController {
         int insertRow = CommentDao.addComment(
                 comment.getText(),
                 comment.getUser().getUserId(),
-                comment.getIssueId(),
+                comment.getIssueNumber(),
                 comment.getTimestamp()
         );
         if (insertRow > 0)

@@ -18,13 +18,13 @@ public class CommentDeserializer extends JsonDeserializer<Comment> {
         ObjectCodec oc = jsonParser.getCodec();
         JsonNode node = oc.readTree(jsonParser);
 
-        final String issueId = node.get("issueId").asText();
-        final String userId = node.get("user").get("id").asText();
+        final String issueNumber = node.get("issueId").asText();
+        final String userId = node.get("user").get("userId").asText();
         final String text = node.get("text").asText();
         final long timestamp = node.get("timestamp").asLong();
 
         final User user = new User(userId, null);
 
-        return new Comment(issueId, null, text, user, timestamp);
+        return new Comment(issueNumber, null, text, user, timestamp);
     }
 }

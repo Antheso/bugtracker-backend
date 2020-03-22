@@ -31,25 +31,33 @@ public class UserController {
 
         ArrayList<User> users = UserDao.getUser(login);
 
-        if(users == null) {
-            throw new Exception("You entered incorrect login/password");
+        if (users.isEmpty()) {
+            ctx.status(401);
+            ctx.result("You entered incorrect login/password");
+            return;
         }
         User tempUser = users.get(0);
+        String pas = tempUser.getPassword();
+        if (!pas.equals(password)) {
+            ctx.status(401);
+            ctx.result("User not found");
+            return;
+        }
 
         String token = JavalinManager.provider.generateToken(tempUser);
-
         JavalinJWT.addTokenToCookie(ctx, token);
         tokenStorage.put(token, tempUser);
 
-        ctx.json(new Response(true, tempUser));
+        ctx.json(new Response(true, "login"));
     };
 
     public static Handler logout = ctx -> {
         DecodedJWT jwt = JavalinJWT.getDecodedFromContext(ctx);
         String token = jwt.getToken();
 
-        if(tokenStorage.get(token) != null){
+        if (tokenStorage.get(token) != null) {
             tokenStorage.remove(token);
+            JavalinJWT.removeTokenToCookie(ctx);
             ctx.json(new Response(true, "logout"));
         } else {
             ctx.json(new Response(false, "not found"));
@@ -63,18 +71,18 @@ public class UserController {
 
         if (user != null) {
             inserRow = UserDao.addUser(
-                    user.getName(),
+                    user.getFirstName(),
                     user.getLastName(),
-                    user.getLoginName(),
                     user.getPassword(),
-                    user.getEmail()
+                    user.getEmail(),
+                    user.getRoleId()
             );
         } else {
             throw new Exception("Insert user failed");
         }
 
         if (inserRow > 0) {
-            ctx.json(new Response(true, user));
+            ctx.json(new Response(true, "success"));
         } else {
             throw new Exception("Insert user failed");
         }

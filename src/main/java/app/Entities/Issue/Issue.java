@@ -9,6 +9,7 @@ import static com.fasterxml.jackson.annotation.JsonInclude.Include.*;
 
 @JsonDeserialize(using = IssueDeserializer.class)
 public class Issue {
+    //id - issue_number //FAQ
     @JsonInclude(NON_NULL)
     String id;
     @JsonInclude(NON_NULL)
@@ -29,6 +30,8 @@ public class Issue {
     User assignee;
     @JsonInclude(NON_NULL)
     User author;
+    @JsonInclude(NON_NULL)
+    String deprecated;
 
     public Issue(String issueId, String summary, String number) {
         this.id = issueId;
@@ -45,7 +48,8 @@ public class Issue {
                  String number,
                  Project project,
                  User assignee,
-                 User author
+                 User author,
+                 String deprecated
     ) {
         this.id = issueId;
         this.summary = summary;
@@ -57,6 +61,7 @@ public class Issue {
         this.project = project;
         this.assignee = assignee;
         this.author = author;
+        this.deprecated = deprecated;
     }
 
     public User getAssignee() {
@@ -137,6 +142,14 @@ public class Issue {
 
     public void setTypeId(String typeId) {
         this.typeId = typeId;
+    }
+
+    public String getDeprecated() {
+        return deprecated;
+    }
+
+    public void setDeprecated(String deprecated) {
+        this.deprecated = deprecated;
     }
 
     @Override

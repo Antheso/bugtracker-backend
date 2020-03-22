@@ -24,7 +24,7 @@ public class UserDao {
             while (resultSet.next())
             {
                 String userId = resultSet.getString("user_id");
-                String name = resultSet.getString("name");
+                String name = resultSet.getString("first_name");
 
                 if(StringUtil.isEmpty(userId) && StringUtil.isEmpty(name))
                     continue;
@@ -58,7 +58,7 @@ public class UserDao {
                 String userId = resultSet.getString("user_id");
                 String password = resultSet.getString("password");
                 String roleId = resultSet.getString("role_id");
-                String name = resultSet.getString("name");
+                String name = resultSet.getString("first_name");
 
                 if(!StringUtil.isEmpty(password) && !StringUtil.isEmpty( userId ) && !StringUtil.isEmpty(roleId) && !StringUtil.isEmpty(name))
                     users.add(new User(userId, password, roleId, name));
@@ -107,17 +107,16 @@ public class UserDao {
         return users;
     }
 
-    public static int addUser(String firstName, String lastName,
-                              String login, String password, String email) throws SQLException {
+    public static int addUser(String firstName, String lastName, String password, String email, String roleId) throws SQLException {
         Connection connection = PostgreConnector.createConnection();
         try {
             PostgreConnector.createConnection();
             PreparedStatement statement = PostgreConnector.createStatement(connection, INSERT_USER_PARAMS);
             statement.setString(1, firstName);
             statement.setString(2, lastName);
-            statement.setString(3, login);
-            statement.setString(4, password);
-            statement.setString(5, email);
+            statement.setString(3, password);
+            statement.setString(4, email);
+            statement.setInt(5, Integer.parseInt(roleId));
 
             return statement.executeUpdate();
         } catch (SQLException ex) {

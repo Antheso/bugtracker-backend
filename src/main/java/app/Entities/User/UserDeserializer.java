@@ -15,13 +15,11 @@ public class UserDeserializer extends JsonDeserializer<User> {
         ObjectCodec codec = jsonParser.getCodec();
         JsonNode node = codec.readTree(jsonParser);
 
-        final String login = node.get("login").asText();
         final String password = node.get("password").asText();
         final String firstName = node.get("firstName").asText();
         final String lastName = node.get("lastName").asText();
         final String email = node.get("email").asText();
 
-
-        return new User(login, password, firstName, lastName, email);
+        return new User(firstName, lastName, password, email, "0");
     }
 }

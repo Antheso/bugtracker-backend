@@ -17,28 +17,43 @@ public class IssueDeserializer extends JsonDeserializer<Issue> {
         ObjectCodec oc = jsonParser.getCodec();
         JsonNode node = oc.readTree(jsonParser);
 
-        final String projectId = node.get("project").get("projectId").asText();
-        final String projectName = node.get("project").get("projectName").asText();
+        String projectId = node.get("project").get("projectId").asText();
+        String projectName = node.get("project").get("projectName").asText();
 
-        final String assigneeId = node.get("assignee").get("userId").asText();
-        final String assigneeName = node.get("assignee").get("name").asText();
+        String assigneeId = node.get("assignee").get("userId").asText();
+        String assigneeName = node.get("assignee").get("firstName").asText();
         User assignee = new User(assigneeId, assigneeName);
         //Experemental
-        //final String authorId = node.get("author").get("authorId").asText();
-        //final String authorName = node.get("author").get("name").asText();
-        //final String number = node.get("number").asText();
-        // User author = new User(authorId, authorName);
+        String authorId;
+        String authorName;
+        String id ="";
+        User author = new User(null, null);
+        try {
+            id = node.get("number").asText();
+            authorId = node.get("author").get("userId").asText();
+            authorName = node.get("author").get("firstName").asText();
+            author = new User(authorId, authorName);
+        } catch (Exception ex) {
 
-        final String description = node.get("description").asText();
-        final String summary = node.get("summary").asText();
-        final String priorityId = node.get("priorityId").asText();
+        }
 
-        final String typeId = node.get("typeId").asText();
-        final String statusId = node.get("statusId").asText();
+
+
+        String description = node.get("description").asText();
+        String summary = node.get("summary").asText();
+        String priorityId = node.get("priorityId").asText();
+
+        String typeId = node.get("typeId").asText();
+        String statusId = node.get("statusId").asText();
 
         Project project = new Project(projectId, projectName);
         project.setProjectId(projectId);
 
-        return new Issue(null, summary, description, priorityId, typeId, statusId, null, project, assignee, null);
+        String number = "";
+        if (!id.isEmpty()) {
+           number = id.split("-")[1];
+        }
+
+        return new Issue(id, summary, description, priorityId, typeId, statusId, number, project, assignee, author, null);
     }
 }

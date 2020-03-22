@@ -56,6 +56,11 @@ public class JavalinJWT {
         return context.cookie(COOKIE_KEY, token);
     }
 
+    public static Context removeTokenToCookie(Context context)
+    {
+        return context.removeCookie(COOKIE_KEY);
+    }
+
     public static Handler createHeaderDecodeHandler(JWTProvider jwtProvider)
     {
         return context -> getTokenFromHeader(context)

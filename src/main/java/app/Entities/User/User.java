@@ -1,6 +1,5 @@
 package app.Entities.User;
 
-import app.Entities.Issue.IssueDeserializer;
 import app.Javalin.Roles;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
@@ -11,13 +10,11 @@ import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
 @JsonDeserialize(using = UserDeserializer.class)
 public class User {
     @JsonInclude(NON_NULL)
-    private String name;
+    private String firstName;
     @JsonInclude(NON_NULL)
     private String userId;
     @JsonInclude(NON_NULL)
     private String lastName;
-    @JsonInclude(NON_NULL)
-    private String loginName;
     @JsonInclude(NON_NULL)
     private String roleId;
     @JsonInclude(NON_NULL)
@@ -25,32 +22,32 @@ public class User {
     @JsonInclude(NON_NULL)
     private String email;
 
-    public User(String userId, String name) {
-        this.name = name;
+    public User(String userId, String firstName) {
+        this.firstName = firstName;
         this.userId = userId;
     }
 
-    public User(String userId, String password, String roleId, String name) {
+    public User(String userId, String password, String roleId, String firstName) {
         this.userId = userId;
         this.password = password;
         this.roleId = roleId;
-        this.name = name;
+        this.firstName = firstName;
     }
 
-    public User(String login, String password, String firstName, String lastName, String email) {
-        this.loginName = login;
-        this.password = password;
-        this.name = firstName;
+    public User(String firstName, String lastName, String password, String email, String roleId) {
+        this.firstName = firstName;
         this.lastName = lastName;
+        this.password = password;
         this.email = email;
+        this.roleId = roleId;//default
     }
 
-    public String getName() {
-        return name;
+    public String getFirstName() {
+        return firstName;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
     }
 
     public String getUserId() {
@@ -67,14 +64,6 @@ public class User {
 
     public void setLastName(String lastName) {
         this.lastName = lastName;
-    }
-
-    public String getLoginName() {
-        return loginName;
-    }
-
-    public void setLoginName(String loginName) {
-        this.loginName = loginName;
     }
 
     public String getRoleId() {
@@ -108,10 +97,9 @@ public class User {
     @Override
     public String toString() {
         return "User{" +
-                "name='" + name + '\'' +
+                "name='" + firstName + '\'' +
                 ", userId='" + userId + '\'' +
                 ", lastName='" + lastName + '\'' +
-                ", loginName='" + loginName + '\'' +
                 ", roleId='" + roleId + '\'' +
                 ", password='" + password + '\'' +
                 '}';
