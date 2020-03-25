@@ -1,6 +1,8 @@
 package app.Entities.User;
 
 import app.Javalin.JavalinManager;
+import app.Notification.Email.EmailNotificator;
+import app.Notification.NotificationType;
 import app.Security.JavalinJWT;
 import app.Util.Response;
 import com.auth0.jwt.interfaces.DecodedJWT;
@@ -13,13 +15,14 @@ import java.util.ArrayList;
 import static app.Javalin.JavalinManager.tokenStorage;
 
 public class UserController {
+    private static EmailNotificator emailNotificator = new EmailNotificator();
+
     public static Handler fetchAllUser = ctx -> {
         ArrayList<User> userData = UserDao.getUsers();
-        if (userData != null) {
-            ctx.json(new Response(true, userData));
-        } else {
-            throw new Exception("User not found");
+        if (userData.isEmpty()) {
+            throw new Exception("Got empty user list!");
         }
+        ctx.json(new Response(Response.Status.OK, userData));
     };
 
     public static Handler login = ctx -> {
@@ -30,10 +33,10 @@ public class UserController {
         final String password = node.get("password").asText();
 
         ArrayList<User> users = UserDao.getUser(login);
-
-        if(users == null) {
+        if (users.isEmpty()) {
             throw new Exception("You entered incorrect login/password");
         }
+
         User tempUser = users.get(0);
 
         String token = JavalinManager.provider.generateToken(tempUser);
@@ -41,42 +44,43 @@ public class UserController {
         JavalinJWT.addTokenToCookie(ctx, token);
         tokenStorage.put(token, tempUser);
 
-        ctx.json(new Response(true, tempUser));
+        ctx.json(new Response(Response.Status.OK, tempUser));
     };
 
     public static Handler logout = ctx -> {
         DecodedJWT jwt = JavalinJWT.getDecodedFromContext(ctx);
         String token = jwt.getToken();
 
-        if(tokenStorage.get(token) != null){
-            tokenStorage.remove(token);
-            ctx.json(new Response(true, "logout"));
-        } else {
-            ctx.json(new Response(false, "not found"));
+        if (tokenStorage.get(token) == null) {
+            ctx.json(new Response(Response.Status.ERROR, "not found"));
         }
+
+        tokenStorage.remove(token);
+        ctx.json(new Response(Response.Status.OK, "logout"));
     };
 
     public static Handler registration = ctx -> {
-        int inserRow = 0;
         ObjectMapper om = new ObjectMapper();
         User user = om.readValue(ctx.body(), User.class);
-
-        if (user != null) {
-            inserRow = UserDao.addUser(
-                    user.getName(),
-                    user.getLastName(),
-                    user.getLoginName(),
-                    user.getPassword(),
-                    user.getEmail()
-            );
-        } else {
+        if (user == null) {
             throw new Exception("Insert user failed");
         }
 
-        if (inserRow > 0) {
-            ctx.json(new Response(true, user));
-        } else {
+        int insertRow = UserDao.addUser(
+                user.getName(),
+                user.getLastName(),
+                user.getLoginName(),
+                user.getPassword(),
+                user.getEmail()
+        );
+        if (insertRow <= 0) {
             throw new Exception("Insert user failed");
         }
+
+        ctx.json(new Response(Response.Status.OK, user));
+
+        emailNotificator.sendUserNotification(user,
+                NotificationType.UserNotification.COMPLETE_REGISTRATION,
+                user.getEmail());
     };
 }

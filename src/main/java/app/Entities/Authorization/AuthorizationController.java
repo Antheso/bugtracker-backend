@@ -32,6 +32,6 @@ public class AuthorizationController {
         JavalinJWT.addTokenToCookie(ctx, token);
         tokenStorage.put(token, tempUser);
 
-        ctx.json(new Response(true, tempUser));
+        ctx.json(new Response(Response.Status.OK, tempUser));
     };
 }
