@@ -86,7 +86,7 @@ public class JavalinManager {
 
         app.exception(AuthorizationException.class, (e, ctx) -> {
             ctx.status(403);
-            ctx.json(new Response(Response.Status.ERROR, "e.getMessage()"));
+            ctx.json(new Response(Response.Status.ERROR, e.getMessage()));
         });
 
         app.exception(Exception.class, (e, ctx) -> {

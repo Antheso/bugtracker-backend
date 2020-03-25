@@ -1,5 +1,6 @@
 package app.Entities.User;
 
+import app.Exception.AuthorizationException;
 import app.Javalin.JavalinManager;
 import app.Notification.Email.EmailNotificator;
 import app.Notification.NotificationType;
@@ -28,12 +29,16 @@ public class UserController {
 
     public static Handler fetchCurrentUser = ctx -> {
         DecodedJWT jwt = JavalinJWT.getDecodedFromContext(ctx);
+        if(jwt == null) {
+            throw new AuthorizationException("Not found user");
+        }
+        
         User tempUser = UserDao.getValidUser(jwt);
         if (tempUser != null) {
-            ctx.json(new Response(Response.Status.OK, tempUser));
-        } else {
-            throw new Exception("User not found");
+            throw new AuthorizationException("Not found user");
         }
+
+        ctx.json(new Response(Response.Status.OK, tempUser));
     };
 
     public static Handler login = ctx -> {
