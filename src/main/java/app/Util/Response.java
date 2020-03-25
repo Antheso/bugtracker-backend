@@ -12,10 +12,24 @@ public class Response {
     @JsonInclude(NON_NULL)
     private String error;
 
-    public Response(boolean status, Object data) {
-        this.status = status ? "OK" : "ERROR";
+    public enum Status {
+        OK,
+        ERROR
+        ;
 
-        if (status) {
+        public boolean isOk() {
+            return this.name().equals("OK");
+        }
+
+        public boolean isError() {
+            return this.name().equals("ERROR");
+        }
+    }
+
+    public Response(Status status, Object data) {
+        this.status = status.name();
+
+        if (status.isOk()) {
             this.data = data;
         } else {
             this.error = data.toString();

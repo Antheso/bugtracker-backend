@@ -1,6 +1,8 @@
 package app.Entities.User;
 
 import app.Javalin.JavalinManager;
+import app.Notification.Email.EmailNotificator;
+import app.Notification.NotificationType;
 import app.Security.JavalinJWT;
 import app.Util.Configuration;
 import app.Util.Response;
@@ -13,20 +15,22 @@ import org.mindrot.jbcrypt.BCrypt;
 import java.util.ArrayList;
 
 public class UserController {
+    private static EmailNotificator emailNotificator = new EmailNotificator();
+
     public static Handler fetchAllUser = ctx -> {
         ArrayList<User> userData = UserDao.getUsers();
-        if (!userData.isEmpty()) {
-            ctx.json(new Response(true, userData));
-        } else {
-            throw new Exception("User not found");
+
+        if (userData.isEmpty()) {
+            throw new Exception("Got empty user list!");
         }
+        ctx.json(new Response(Response.Status.OK, userData));
     };
 
     public static Handler fetchCurrentUser = ctx -> {
         DecodedJWT jwt = JavalinJWT.getDecodedFromContext(ctx);
         User tempUser = UserDao.getValidUser(jwt);
         if (tempUser != null) {
-            ctx.json(new Response(true, tempUser));
+            ctx.json(new Response(Response.Status.OK, tempUser));
         } else {
             throw new Exception("User not found");
         }
@@ -46,6 +50,7 @@ public class UserController {
             ctx.result("You entered incorrect login/password");
             return;
         }
+
         User tempUser = users.get(0);
         String pas = tempUser.getPassword();
         if (!BCrypt.checkpw(password, pas)) {
@@ -57,36 +62,37 @@ public class UserController {
         String token = JavalinManager.provider.generateToken(tempUser);
         JavalinJWT.addTokenToCookie(ctx, token);
 
-        ctx.json(new Response(true, "success login"));
+        ctx.json(new Response(Response.Status.OK, "success login"));
     };
 
     public static Handler logout = ctx -> {
         JavalinJWT.removeTokenToCookie(ctx);
-        ctx.json(new Response(true, "logout"));
+        ctx.json(new Response(Response.Status.OK, "logout"));
     };
 
     public static Handler registration = ctx -> {
         ObjectMapper om = new ObjectMapper();
         User user = om.readValue(ctx.body(), User.class);
-
-        if (user != null) {
-            int insertRow = UserDao.addUser(
-                    user.getFirstName(),
-                    user.getLastName(),
-                    user.getPassword(),
-                    user.getEmail(),
-                    user.getRoleId()
-            );
-
-            if (insertRow > 0) {
-                ctx.json(new Response(true, "success registration"));
-            } else {
-                throw new Exception("Insert user failed");
-            }
-        } else {
+        if (user == null) {
             throw new Exception("Insert user failed");
         }
+
+        int insertRow = UserDao.addUser(
+                user.getFirstName(),
+                user.getLastName(),
+                user.getPassword(),
+                user.getEmail(),
+                user.getRoleId()
+        );
+
+        if (insertRow <= 0) {
+            throw new Exception("Insert user failed");
+        }
+
+        ctx.json(new Response(Response.Status.OK, "success registration"));
+
+        emailNotificator.sendUserNotification(user,
+                NotificationType.UserNotification.COMPLETE_REGISTRATION,
+                user.getEmail());
     };
-
-
 }

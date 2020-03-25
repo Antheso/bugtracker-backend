@@ -4,6 +4,8 @@ import app.Entities.Comment.CommentDao;
 import app.Entities.User.User;
 import app.Entities.User.UserDao;
 import app.Exception.AuthorizationException;
+import app.Notification.Email.EmailNotificator;
+import app.Notification.NotificationType;
 import app.Security.JavalinJWT;
 import app.Util.Response;
 import com.auth0.jwt.interfaces.DecodedJWT;
@@ -12,8 +14,12 @@ import io.javalin.http.Handler;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 
 public class IssueController {
+
+    private static EmailNotificator emailNotificator = new EmailNotificator();
 
     public static Handler fetchFilteredIssue = ctx -> {
         ArrayList<Issue> data;
@@ -31,7 +37,15 @@ public class IssueController {
             data = IssueDao.getTableIssueLimit(limit, offset);
         }
 
-        ctx.json(new Response(true, data));
+        ctx.json(new Response(Response.Status.OK, data));
+    };
+
+    public static Handler fetchAllIssue = ctx -> {
+        ArrayList<Issue> data = IssueDao.getTableIssue();
+        if (data.isEmpty()) {
+            throw new Exception("Select issue failed");
+        }
+        ctx.json(new Response(Response.Status.OK, data));
     };
 
     public static Handler fetchIssueByID = ctx -> {
@@ -39,7 +53,7 @@ public class IssueController {
         if (tempIssue == null) {
             throw new Exception("Issue not found");
         }
-        ctx.json(new Response(true, tempIssue));
+        ctx.json(new Response(Response.Status.OK, tempIssue));
     };
 
     public static Handler insertIssue = ctx -> {
@@ -65,22 +79,31 @@ public class IssueController {
                 issue.deprecated
         );
 
-        if (insertRow > 0) {
-            ctx.json(new Response(true, issue));
-        } else {
+        if (insertRow <= 0) {
             throw new Exception("Insert issue failed");
         }
+
+        ctx.json(new Response(Response.Status.OK, issue));
+
+        Set<String> receivers = new HashSet<>();
+        receivers.add(issue.getAuthor().getEmail());
+        receivers.add(issue.getAssignee().getEmail());
+        emailNotificator.sendIssueNotification(issue, NotificationType.IssueNotification.NEW_ISSUE, receivers);
     };
 
     public static Handler updateIssue = ctx -> {
         ObjectMapper om = new ObjectMapper();
-
         Issue issue = om.readValue(ctx.body(), Issue.class);
         String newId = issue.project.getProjectId() + "-" + issue.number;
         if (!issue.id.isEmpty() && !issue.id.equals(newId)) {
             replaceIssue(issue);
-            ctx.json(new Response(true, issue));
+            ctx.json(new Response(Response.Status.OK, issue));
             return;
+        }
+
+        Issue oldIssue = IssueDao.getIssueByID(issue.getId());
+        if (oldIssue == null) {
+            throw new Exception("Cannot get issue to update!");
         }
 
         int updateRow = IssueDao.updateIssue(
@@ -93,21 +116,51 @@ public class IssueController {
                 issue.getAssignee().getUserId()
         );
 
-        if (updateRow > 0)
-            ctx.json(new Response(true, issue));
-        else {
+        if (updateRow <= 0) {
             throw new Exception("Update issue failed");
+        }
+
+        ctx.json(new Response(Response.Status.OK, issue));
+
+        Set<String> receivers = new HashSet<>();
+        receivers.add(issue.getAuthor().getEmail());
+        receivers.add(issue.getAssignee().getEmail());
+
+        // todo: определиться с тем, что еще нотифицировать конкретно
+        if (!oldIssue.getStatusId().equals(issue.getStatusId())) {
+            emailNotificator.sendIssueNotification(issue,
+                    NotificationType.IssueNotification.STATUS_CHANGED,
+                    receivers);
+        } else if (!oldIssue.getDescription().equals(issue.getDescription())) {
+            emailNotificator.sendIssueNotification(issue,
+                    NotificationType.IssueNotification.DESCRIPTION_CHANGED,
+                    receivers);
+        } else {
+            emailNotificator.sendIssueNotification(issue,
+                    NotificationType.IssueNotification.SOMETHING_CHANGED,
+                    receivers);
         }
     };
 
     public static Handler deleteIssue = ctx -> {
         CommentDao.removeAllCommentId(ctx.pathParam("id"));
+
+        Issue issue = IssueDao.getIssueByID(ctx.pathParam("id"));
+        if (issue == null) {
+            throw new Exception("Cannot fetch issue to delete it!");
+        }
+
         int deleteRow = IssueDao.deleteIssue(ctx.pathParam("id"));
-        if (deleteRow > 0) {
-            ctx.json(new Response(true, "delete"));
-        } else {
+        if (deleteRow <= 0) {
             throw new Exception("Delete issue failed");
         }
+
+        ctx.json(new Response(Response.Status.OK, "delete"));
+
+        Set<String> receivers = new HashSet<>();
+        receivers.add(issue.getAuthor().getEmail());
+        receivers.add(issue.getAssignee().getEmail());
+        emailNotificator.sendIssueNotification(issue, NotificationType.IssueNotification.ISSUE_DELETED, receivers);
     };
 
     private static int replaceIssue(Issue issue) throws SQLException {

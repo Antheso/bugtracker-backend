@@ -9,7 +9,7 @@ public class StatusController {
     public static Handler fetchAllStatus = ctx -> {
         ArrayList<Status> statusData = StatusDao.getStatuses();
         if (statusData != null) {
-            ctx.json(new Response(true, statusData));
+            ctx.json(new Response(Response.Status.OK, statusData));
         } else {
             throw new Exception("Status not found");
         }
