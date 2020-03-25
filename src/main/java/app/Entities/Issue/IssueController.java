@@ -85,10 +85,10 @@ public class IssueController {
 
         ctx.json(new Response(Response.Status.OK, issue));
 
-        Set<String> receivers = new HashSet<>();
-        receivers.add(issue.getAuthor().getEmail());
-        receivers.add(issue.getAssignee().getEmail());
-        emailNotificator.sendIssueNotification(issue, NotificationType.IssueNotification.NEW_ISSUE, receivers);
+//        Set<String> receivers = new HashSet<>();
+//        receivers.add(issue.getAuthor().getEmail());
+//        receivers.add(issue.getAssignee().getEmail());
+//        emailNotificator.sendIssueNotification(issue, NotificationType.IssueNotification.NEW_ISSUE, receivers);
     };
 
     public static Handler updateIssue = ctx -> {
@@ -122,24 +122,24 @@ public class IssueController {
 
         ctx.json(new Response(Response.Status.OK, issue));
 
-        Set<String> receivers = new HashSet<>();
-        receivers.add(issue.getAuthor().getEmail());
-        receivers.add(issue.getAssignee().getEmail());
+//        Set<String> receivers = new HashSet<>();
+//        receivers.add(issue.getAuthor().getEmail());
+//        receivers.add(issue.getAssignee().getEmail());
 
         // todo: определиться с тем, что еще нотифицировать конкретно
-        if (!oldIssue.getStatusId().equals(issue.getStatusId())) {
-            emailNotificator.sendIssueNotification(issue,
-                    NotificationType.IssueNotification.STATUS_CHANGED,
-                    receivers);
-        } else if (!oldIssue.getDescription().equals(issue.getDescription())) {
-            emailNotificator.sendIssueNotification(issue,
-                    NotificationType.IssueNotification.DESCRIPTION_CHANGED,
-                    receivers);
-        } else {
-            emailNotificator.sendIssueNotification(issue,
-                    NotificationType.IssueNotification.SOMETHING_CHANGED,
-                    receivers);
-        }
+//        if (!oldIssue.getStatusId().equals(issue.getStatusId())) {
+//            emailNotificator.sendIssueNotification(issue,
+//                    NotificationType.IssueNotification.STATUS_CHANGED,
+//                    receivers);
+//        } else if (!oldIssue.getDescription().equals(issue.getDescription())) {
+//            emailNotificator.sendIssueNotification(issue,
+//                    NotificationType.IssueNotification.DESCRIPTION_CHANGED,
+//                    receivers);
+//        } else {
+//            emailNotificator.sendIssueNotification(issue,
+//                    NotificationType.IssueNotification.SOMETHING_CHANGED,
+//                    receivers);
+//        }
     };
 
     public static Handler deleteIssue = ctx -> {
@@ -157,10 +157,10 @@ public class IssueController {
 
         ctx.json(new Response(Response.Status.OK, "delete"));
 
-        Set<String> receivers = new HashSet<>();
-        receivers.add(issue.getAuthor().getEmail());
-        receivers.add(issue.getAssignee().getEmail());
-        emailNotificator.sendIssueNotification(issue, NotificationType.IssueNotification.ISSUE_DELETED, receivers);
+//        Set<String> receivers = new HashSet<>();
+//        receivers.add(issue.getAuthor().getEmail());
+//        receivers.add(issue.getAssignee().getEmail());
+//        emailNotificator.sendIssueNotification(issue, NotificationType.IssueNotification.ISSUE_DELETED, receivers);
     };
 
     private static int replaceIssue(Issue issue) throws SQLException {

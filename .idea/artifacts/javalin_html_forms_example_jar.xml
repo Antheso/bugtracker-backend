@@ -5,7 +5,6 @@
       <element id="directory" name="META-INF">
         <element id="file-copy" path="$PROJECT_DIR$/src/main/JavaBuild/META-INF/MANIFEST.MF" />
       </element>
-      <element id="module-output" name="javalin-html-forms-example" />
       <element id="extracted-dir" path="$MAVEN_REPOSITORY$/org/eclipse/jetty/jetty-http/9.4.25.v20191220/jetty-http-9.4.25.v20191220.jar" path-in-jar="/" />
       <element id="extracted-dir" path="$MAVEN_REPOSITORY$/org/jetbrains/annotations/13.0/annotations-13.0.jar" path-in-jar="/" />
       <element id="extracted-dir" path="$MAVEN_REPOSITORY$/org/eclipse/jetty/websocket/websocket-client/9.4.25.v20191220/websocket-client-9.4.25.v20191220.jar" path-in-jar="/" />
@@ -54,6 +53,59 @@
       <element id="extracted-dir" path="$MAVEN_REPOSITORY$/com/fasterxml/jackson/core/jackson-core/2.10.2/jackson-core-2.10.2.jar" path-in-jar="/" />
       <element id="extracted-dir" path="$MAVEN_REPOSITORY$/org/jetbrains/kotlin/kotlin-stdlib-jdk8/1.3.61/kotlin-stdlib-jdk8-1.3.61.jar" path-in-jar="/" />
       <element id="extracted-dir" path="$MAVEN_REPOSITORY$/commons-codec/commons-codec/1.11/commons-codec-1.11.jar" path-in-jar="/" />
+      <element id="library" level="project" name="Maven: org.mindrot:jbcrypt:0.4" />
+      <element id="library" level="project" name="Maven: io.javalin:javalin:3.7.0" />
+      <element id="library" level="project" name="Maven: org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.3.61" />
+      <element id="library" level="project" name="Maven: org.jetbrains.kotlin:kotlin-stdlib:1.3.61" />
+      <element id="library" level="project" name="Maven: org.jetbrains.kotlin:kotlin-stdlib-common:1.3.61" />
+      <element id="library" level="project" name="Maven: org.jetbrains:annotations:13.0" />
+      <element id="library" level="project" name="Maven: org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.3.61" />
+      <element id="library" level="project" name="Maven: org.slf4j:slf4j-api:1.7.28" />
+      <element id="library" level="project" name="Maven: org.eclipse.jetty:jetty-server:9.4.25.v20191220" />
+      <element id="library" level="project" name="Maven: javax.servlet:javax.servlet-api:3.1.0" />
+      <element id="library" level="project" name="Maven: org.eclipse.jetty:jetty-http:9.4.25.v20191220" />
+      <element id="library" level="project" name="Maven: org.eclipse.jetty:jetty-util:9.4.25.v20191220" />
+      <element id="library" level="project" name="Maven: org.eclipse.jetty:jetty-io:9.4.25.v20191220" />
+      <element id="library" level="project" name="Maven: org.eclipse.jetty:jetty-webapp:9.4.25.v20191220" />
+      <element id="library" level="project" name="Maven: org.eclipse.jetty:jetty-xml:9.4.25.v20191220" />
+      <element id="library" level="project" name="Maven: org.eclipse.jetty:jetty-servlet:9.4.25.v20191220" />
+      <element id="library" level="project" name="Maven: org.eclipse.jetty:jetty-security:9.4.25.v20191220" />
+      <element id="library" level="project" name="Maven: org.eclipse.jetty.websocket:websocket-server:9.4.25.v20191220" />
+      <element id="library" level="project" name="Maven: org.eclipse.jetty.websocket:websocket-common:9.4.25.v20191220" />
+      <element id="library" level="project" name="Maven: org.eclipse.jetty.websocket:websocket-api:9.4.25.v20191220" />
+      <element id="library" level="project" name="Maven: org.eclipse.jetty.websocket:websocket-client:9.4.25.v20191220" />
+      <element id="library" level="project" name="Maven: org.eclipse.jetty:jetty-client:9.4.25.v20191220" />
+      <element id="library" level="project" name="Maven: org.eclipse.jetty.websocket:websocket-servlet:9.4.25.v20191220" />
+      <element id="library" level="project" name="Maven: org.yaml:snakeyaml:1.25" />
+      <element id="library" level="project" name="Maven: com.google.guava:guava:28.2-jre" />
+      <element id="library" level="project" name="Maven: com.google.guava:failureaccess:1.0.1" />
+      <element id="library" level="project" name="Maven: com.google.guava:listenablefuture:9999.0-empty-to-avoid-conflict-with-guava" />
+      <element id="library" level="project" name="Maven: com.google.code.findbugs:jsr305:3.0.2" />
+      <element id="library" level="project" name="Maven: org.checkerframework:checker-qual:2.10.0" />
+      <element id="library" level="project" name="Maven: com.google.errorprone:error_prone_annotations:2.3.4" />
+      <element id="library" level="project" name="Maven: com.google.j2objc:j2objc-annotations:1.3" />
+      <element id="library" level="project" name="Maven: ch.qos.logback:logback-classic:1.2.3" />
+      <element id="library" level="project" name="Maven: ch.qos.logback:logback-core:1.2.3" />
+      <element id="library" level="project" name="Maven: commons-io:commons-io:2.5" />
+      <element id="library" level="project" name="Maven: postgresql:postgresql:9.1-901-1.jdbc4" />
+      <element id="library" level="project" name="Maven: org.thymeleaf:thymeleaf:3.0.9.RELEASE" />
+      <element id="library" level="project" name="Maven: ognl:ognl:3.1.12" />
+      <element id="library" level="project" name="Maven: org.javassist:javassist:3.20.0-GA" />
+      <element id="library" level="project" name="Maven: org.attoparser:attoparser:2.0.4.RELEASE" />
+      <element id="library" level="project" name="Maven: org.unbescape:unbescape:1.1.5.RELEASE" />
+      <element id="library" level="project" name="Maven: com.fasterxml.uuid:java-uuid-generator:3.3.0" />
+      <element id="library" level="project" name="Maven: com.fasterxml.jackson.core:jackson-databind:2.10.2" />
+      <element id="library" level="project" name="Maven: com.fasterxml.jackson.core:jackson-annotations:2.10.2" />
+      <element id="library" level="project" name="Maven: com.fasterxml.jackson.core:jackson-core:2.10.2" />
+      <element id="library" level="project" name="Maven: io.jsonwebtoken:jjwt-api:0.11.0" />
+      <element id="library" level="project" name="Maven: io.jsonwebtoken:jjwt-impl:0.11.0" />
+      <element id="library" level="project" name="Maven: io.jsonwebtoken:jjwt-jackson:0.11.0" />
+      <element id="library" level="project" name="Maven: com.auth0:java-jwt:3.4.0" />
+      <element id="library" level="project" name="Maven: commons-codec:commons-codec:1.11" />
+      <element id="library" level="project" name="Maven: com.googlecode.perfect-hashes:perfect-hashes:1.0" />
+      <element id="library" level="project" name="Maven: javax.mail:mail:1.4" />
+      <element id="library" level="project" name="Maven: javax.activation:activation:1.1" />
+      <element id="module-output" name="javalin-html-forms-example" />
     </root>
   </artifact>
 </component>

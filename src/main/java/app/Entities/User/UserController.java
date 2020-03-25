@@ -53,7 +53,8 @@ public class UserController {
 
         User tempUser = users.get(0);
         String pas = tempUser.getPassword();
-        if (!BCrypt.checkpw(password, pas)) {
+//        if (!BCrypt.checkpw(password, pas)) {
+        if(!pas.equals(password)) {
             ctx.status(401);
             ctx.result("User not found");
             return;
@@ -91,8 +92,8 @@ public class UserController {
 
         ctx.json(new Response(Response.Status.OK, "success registration"));
 
-        emailNotificator.sendUserNotification(user,
-                NotificationType.UserNotification.COMPLETE_REGISTRATION,
-                user.getEmail());
+//        emailNotificator.sendUserNotification(user,
+//                NotificationType.UserNotification.COMPLETE_REGISTRATION,
+//                user.getEmail());
     };
 }

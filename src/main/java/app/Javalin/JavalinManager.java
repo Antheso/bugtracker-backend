@@ -27,7 +27,6 @@ public class JavalinManager {
     private static JavalinManager instance;
     private static Handler decodeHandler;
     public static JWTProvider provider;
-    public static Map<String, User> tokenStorage;
     public static Javalin app;
     public static JWTAccessManager accessManager;
 
@@ -45,7 +44,6 @@ public class JavalinManager {
         accessManager = new JWTAccessManager("level", rolesMapping, Roles.ANYONE);
         provider = UserProvider.createHMAC512();
         decodeHandler = JavalinJWT.createCookieDecodeHandler(provider);
-        tokenStorage = new HashMap<String, User>();
 
         app.config.accessManager(accessManager);
         app.routes(JavalinManager::addEndpoints);
@@ -79,7 +77,7 @@ public class JavalinManager {
 
         post(Path.Web.LOGIN, UserController.login, new HashSet<>(Arrays.asList(Roles.ANYONE, Roles.USER)));
         post(Path.Web.LOGOUT, UserController.logout, new HashSet<>(Arrays.asList(Roles.ANYONE, Roles.USER)));
-        post(Path.Web.REGISTRATION, UserController.registration, new HashSet<>(Arrays.asList(Roles.USER, Roles.USER)));
+        post(Path.Web.REGISTRATION, UserController.registration, new HashSet<>(Arrays.asList(Roles.ANYONE, Roles.USER)));
 
         get(Path.Web.COMMENT_BY_ISSUE, CommentController.fetchAllComment, new HashSet<>(Arrays.asList(Roles.ANYONE, Roles.USER)));
         post(Path.Web.COMMENT, CommentController.addComment, Collections.singleton(Roles.USER));
