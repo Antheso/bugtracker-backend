@@ -2,21 +2,31 @@ package app.Entities.User;
 
 import app.Javalin.JavalinManager;
 import app.Security.JavalinJWT;
+import app.Util.Configuration;
 import app.Util.Response;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.javalin.http.Handler;
+import org.mindrot.jbcrypt.BCrypt;
 
 import java.util.ArrayList;
-
-import static app.Javalin.JavalinManager.tokenStorage;
 
 public class UserController {
     public static Handler fetchAllUser = ctx -> {
         ArrayList<User> userData = UserDao.getUsers();
-        if (userData != null) {
+        if (!userData.isEmpty()) {
             ctx.json(new Response(true, userData));
+        } else {
+            throw new Exception("User not found");
+        }
+    };
+
+    public static Handler fetchCurrentUser = ctx -> {
+        DecodedJWT jwt = JavalinJWT.getDecodedFromContext(ctx);
+        User tempUser = UserDao.getValidUser(jwt);
+        if (tempUser != null) {
+            ctx.json(new Response(true, tempUser));
         } else {
             throw new Exception("User not found");
         }
@@ -38,7 +48,7 @@ public class UserController {
         }
         User tempUser = users.get(0);
         String pas = tempUser.getPassword();
-        if (!pas.equals(password)) {
+        if (!BCrypt.checkpw(password, pas)) {
             ctx.status(401);
             ctx.result("User not found");
             return;
@@ -46,45 +56,37 @@ public class UserController {
 
         String token = JavalinManager.provider.generateToken(tempUser);
         JavalinJWT.addTokenToCookie(ctx, token);
-        tokenStorage.put(token, tempUser);
 
-        ctx.json(new Response(true, "login"));
+        ctx.json(new Response(true, "success login"));
     };
 
     public static Handler logout = ctx -> {
-        DecodedJWT jwt = JavalinJWT.getDecodedFromContext(ctx);
-        String token = jwt.getToken();
-
-        if (tokenStorage.get(token) != null) {
-            tokenStorage.remove(token);
-            JavalinJWT.removeTokenToCookie(ctx);
-            ctx.json(new Response(true, "logout"));
-        } else {
-            ctx.json(new Response(false, "not found"));
-        }
+        JavalinJWT.removeTokenToCookie(ctx);
+        ctx.json(new Response(true, "logout"));
     };
 
     public static Handler registration = ctx -> {
-        int inserRow = 0;
         ObjectMapper om = new ObjectMapper();
         User user = om.readValue(ctx.body(), User.class);
 
         if (user != null) {
-            inserRow = UserDao.addUser(
+            int insertRow = UserDao.addUser(
                     user.getFirstName(),
                     user.getLastName(),
                     user.getPassword(),
                     user.getEmail(),
                     user.getRoleId()
             );
-        } else {
-            throw new Exception("Insert user failed");
-        }
 
-        if (inserRow > 0) {
-            ctx.json(new Response(true, "success"));
+            if (insertRow > 0) {
+                ctx.json(new Response(true, "success registration"));
+            } else {
+                throw new Exception("Insert user failed");
+            }
         } else {
             throw new Exception("Insert user failed");
         }
     };
+
+
 }

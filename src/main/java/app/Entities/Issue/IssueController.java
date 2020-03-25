@@ -2,6 +2,7 @@ package app.Entities.Issue;
 
 import app.Entities.Comment.CommentDao;
 import app.Entities.User.User;
+import app.Entities.User.UserDao;
 import app.Exception.AuthorizationException;
 import app.Security.JavalinJWT;
 import app.Util.Response;
@@ -11,8 +12,6 @@ import io.javalin.http.Handler;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
-
-import static app.Javalin.JavalinManager.tokenStorage;
 
 public class IssueController {
 
@@ -48,7 +47,7 @@ public class IssueController {
         Issue issue = om.readValue(ctx.body(), Issue.class);
 
         DecodedJWT jwt = JavalinJWT.getDecodedFromContext(ctx);
-        User author = jwt != null ? tokenStorage.get(jwt.getToken()) : null;
+        User author = UserDao.getValidUser(jwt);
 
         if (author == null) {
             throw new AuthorizationException("Insert bad author failed");
@@ -79,7 +78,7 @@ public class IssueController {
         Issue issue = om.readValue(ctx.body(), Issue.class);
         String newId = issue.project.getProjectId() + "-" + issue.number;
         if (!issue.id.isEmpty() && !issue.id.equals(newId)) {
-            replaceIssue(issue, newId);
+            replaceIssue(issue);
             ctx.json(new Response(true, issue));
             return;
         }
@@ -111,7 +110,7 @@ public class IssueController {
         }
     };
 
-    private static int replaceIssue(Issue issue, String newId) throws SQLException {
+    private static int replaceIssue(Issue issue) throws SQLException {
 
         int insertRow = IssueDao.addIssue(
                 issue.getSummary(),

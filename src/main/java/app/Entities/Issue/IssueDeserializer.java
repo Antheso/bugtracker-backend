@@ -37,8 +37,6 @@ public class IssueDeserializer extends JsonDeserializer<Issue> {
 
         }
 
-
-
         String description = node.get("description").asText();
         String summary = node.get("summary").asText();
         String priorityId = node.get("priorityId").asText();

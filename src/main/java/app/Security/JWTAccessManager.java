@@ -1,6 +1,7 @@
 package app.Security;
 
 import app.Entities.User.User;
+import app.Entities.User.UserDao;
 import app.Exception.AuthorizationException;
 import app.Javalin.Roles;
 import app.Util.MyLogger;
@@ -10,11 +11,10 @@ import io.javalin.core.security.Role;
 import io.javalin.http.Context;
 import io.javalin.http.Handler;
 
+import java.sql.SQLException;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
-
-import static app.Javalin.JavalinManager.tokenStorage;
 
 public class JWTAccessManager implements AccessManager {
     private String userRoleClaim;
@@ -28,17 +28,17 @@ public class JWTAccessManager implements AccessManager {
         this.defaultRole = defaultRole;
     }
 
-    private boolean isAuthorized(Context context) {
-        if (!JavalinJWT.containsJWT(context)) {
-            return false;
-        }
+//    private boolean isAuthorized(Context context) {
+//        if (!JavalinJWT.containsJWT(context)) {
+//            return false;
+//        }
+//
+//        DecodedJWT jwt = JavalinJWT.getDecodedFromContext(context);
+//        return tokenStorage.get(jwt.getToken()) == null;
+//    }
 
-        DecodedJWT jwt = JavalinJWT.getDecodedFromContext(context);
-        return tokenStorage.get(jwt.getToken()) == null;
-    }
 
-
-    private Role extractRole(Context context) {
+    private Role extractRole(Context context) throws SQLException {
         if (!JavalinJWT.containsJWT(context)) {
             return defaultRole;
         }
@@ -46,9 +46,7 @@ public class JWTAccessManager implements AccessManager {
         DecodedJWT jwt = JavalinJWT.getDecodedFromContext(context);
         String userLevel = jwt.getClaim("roleId").asString();
 
-//Experemental
-        String token = jwt.getToken();
-        User currentUser = tokenStorage.get(token);
+        User currentUser = UserDao.getValidUser(jwt);
         if (currentUser != null) {
             myLogger.info("User:" + currentUser.getFirstName() + " is autorized");
         }
@@ -60,7 +58,7 @@ public class JWTAccessManager implements AccessManager {
     @Override
     public void manage(Handler handler, Context context, Set<Role> permittedRoles) throws Exception {
         Role role = extractRole(context);
-//      Experemental
+
         if (permittedRoles.contains(role)) {
             handler.handle(context);
         } else {

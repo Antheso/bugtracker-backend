@@ -9,7 +9,6 @@ import static com.fasterxml.jackson.annotation.JsonInclude.Include.*;
 
 @JsonDeserialize(using = IssueDeserializer.class)
 public class Issue {
-    //id - issue_number //FAQ
     @JsonInclude(NON_NULL)
     String id;
     @JsonInclude(NON_NULL)

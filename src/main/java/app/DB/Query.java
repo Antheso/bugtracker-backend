@@ -28,6 +28,9 @@ public class Query {
     public static final String SELECT_TABLE_USERS
             = "select first_name, user_id from \"BugTracker\".\"User\"";
 
+    public static final String SELECT_TABLE_ROLE
+            = "select name, role_id from \"BugTracker\".\"Role\"";
+
     public static final String SELECT_USER
             = "select user_id, first_name, role_id, password from \"BugTracker\".\"User\"";
 
@@ -48,6 +51,9 @@ public class Query {
     public static final String SELECT_USER_BY_LOGIN
             = SELECT_USER + "where email = ? ";
 
+    public static final String SELECT_VALID_USER
+            = "select user_id, first_name, role_id from \"BugTracker\".\"User\" where role_id = ? and user_id = ? and first_name = ? ";
+
     public static final String SELECT_USER_BY_ID
             = SELECT_USER + "where user_id = ? ";
 
@@ -56,9 +62,6 @@ public class Query {
             "from \"BugTracker\".\"Comment\" comment " +
             "inner join \"BugTracker\".\"User\" buser on comment.user_id = buser.user_id " +
             "where issue_number = ?";
-
-//    public static String SELECT_COMMENT_BY_ISSUE_ID_RECURSIVE
-//           = "select comment.comment_id, comment.text, comment.user_id, buser.first_name, extract(epoch from timestamp) as timestamp from(WITH RECURSIVE included_numbers(deprecated, issue_number) AS (    SELECT deprecated, issue_number FROM \"BugTracker\".\"Issue\" WHERE issue_number = ?    UNION ALL    SELECT p.deprecated, p.issue_number    FROM included_numbers pr, \"BugTracker\".\"Issue\" p    WHERE p.issue_number = pr.deprecated)SELECT issue_number FROM included_numbers) inum inner join \"BugTracker\".\"Comment\" comment on inum.issue_number = comment.issue_number inner join \"BugTracker\".\"User\" buser on comment.user_id = buser.user_id";
 
     public static String INSERT_ISSUE_PARAMS
         = INSERT("Issue")
