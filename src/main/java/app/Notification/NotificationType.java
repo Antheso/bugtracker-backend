@@ -18,7 +18,7 @@ public class NotificationType {
             public String generateText(User user) {
                 // todo: ссылка для подтверждение регистрации, почты и тд
                 return String.format("Now you have to complete the registration, %s",
-                        user.getName());
+                        user.getFirstName());
             }
         },
 

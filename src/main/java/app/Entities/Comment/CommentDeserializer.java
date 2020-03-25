@@ -19,12 +19,9 @@ public class CommentDeserializer extends JsonDeserializer<Comment> {
         JsonNode node = oc.readTree(jsonParser);
 
         final String issueNumber = node.get("issueId").asText();
-        final String userId = node.get("user").get("userId").asText();
         final String text = node.get("text").asText();
         final long timestamp = node.get("timestamp").asLong();
 
-        final User user = new User(userId, null);
-
-        return new Comment(issueNumber, null, text, user, timestamp);
+        return new Comment(issueNumber, null, text, null, timestamp);
     }
 }

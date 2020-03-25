@@ -1,6 +1,5 @@
 package app.Javalin;
 
-import app.Entities.Authorization.AuthorizationController;
 import app.Entities.Comment.CommentController;
 import app.Entities.Issue.IssueController;
 import app.Entities.Priority.PriorityController;
@@ -9,11 +8,11 @@ import app.Entities.Status.StatusController;
 import app.Entities.Type.TypeController;
 import app.Entities.User.User;
 import app.Entities.User.UserController;
+import app.Exception.AuthorizationException;
 import app.Security.JWTAccessManager;
 import app.Security.JWTProvider;
 import app.Security.JavalinJWT;
 import app.Entities.User.UserProvider;
-import app.Util.Configuration;
 import app.Util.MyLogger;
 import app.Util.Path;
 import app.Util.Response;
@@ -64,32 +63,32 @@ public class JavalinManager {
     private static void addEndpoints() {
         app.before(decodeHandler);
 
-        get(Path.Web.ISSUE, IssueController.fetchFilteredIssue, new HashSet<>(Arrays.asList(Roles.ANYONE, Roles.ADMIN)));
+        get(Path.Web.ISSUE, IssueController.fetchFilteredIssue, new HashSet<>(Arrays.asList(Roles.ANYONE , Roles.USER)));
 
-        get(Path.Web.ONE_ISSUE, IssueController.fetchIssueByID, new HashSet<>(Arrays.asList(Roles.ANYONE, Roles.ADMIN)));
-        post(Path.Web.ISSUE, IssueController.insertIssue, Collections.singleton(Roles.ADMIN));
-        patch(Path.Web.ONE_ISSUE, IssueController.updateIssue, Collections.singleton(Roles.ADMIN));
-        delete(Path.Web.ONE_ISSUE, IssueController.deleteIssue, Collections.singleton(Roles.ADMIN));
+        get(Path.Web.ONE_ISSUE, IssueController.fetchIssueByID, new HashSet<>(Arrays.asList(Roles.ANYONE, Roles.USER)));
+        post(Path.Web.ISSUE, IssueController.insertIssue, Collections.singleton(Roles.USER));
+        patch(Path.Web.ONE_ISSUE, IssueController.updateIssue, Collections.singleton(Roles.USER));
+        delete(Path.Web.ONE_ISSUE, IssueController.deleteIssue, Collections.singleton(Roles.USER));
 
-        get(Path.Web.PROJECTS, ProjectController.fetchAllProject, new HashSet<>(Arrays.asList(Roles.ANYONE, Roles.ADMIN)));
-        get(Path.Web.PRIORITY, PriorityController.fetchAllPriority, new HashSet<>(Arrays.asList(Roles.ANYONE, Roles.ADMIN)));
-        get(Path.Web.STATUS, StatusController.fetchAllStatus, new HashSet<>(Arrays.asList(Roles.ANYONE, Roles.ADMIN)));
-        get(Path.Web.TYPES, TypeController.fetchAllType, new HashSet<>(Arrays.asList(Roles.ANYONE, Roles.ADMIN)));
+        get(Path.Web.PROJECTS, ProjectController.fetchAllProject, new HashSet<>(Arrays.asList(Roles.ANYONE, Roles.USER)));
+        get(Path.Web.PRIORITY, PriorityController.fetchAllPriority, new HashSet<>(Arrays.asList(Roles.ANYONE, Roles.USER)));
+        get(Path.Web.STATUS, StatusController.fetchAllStatus, new HashSet<>(Arrays.asList(Roles.ANYONE, Roles.USER)));
+        get(Path.Web.TYPES, TypeController.fetchAllType, new HashSet<>(Arrays.asList(Roles.ANYONE, Roles.USER)));
 
-        get(Path.Web.USERS, UserController.fetchAllUser, new HashSet<>(Arrays.asList(Roles.ANYONE, Roles.ADMIN)));
+        get(Path.Web.USERS, UserController.fetchAllUser, new HashSet<>(Arrays.asList(Roles.ANYONE, Roles.USER)));
 
-        post(Path.Web.LOGIN, UserController.login, new HashSet<>(Arrays.asList(Roles.ANYONE, Roles.ADMIN)));
-        post(Path.Web.LOGOUT, UserController.logout, new HashSet<>(Arrays.asList(Roles.ANYONE, Roles.ADMIN)));
-        post(Path.Web.REGISTRATION, UserController.registration, new HashSet<>(Arrays.asList(Roles.ANYONE, Roles.ADMIN)));
+        post(Path.Web.LOGIN, UserController.login, new HashSet<>(Arrays.asList(Roles.ANYONE, Roles.USER)));
+        post(Path.Web.LOGOUT, UserController.logout, new HashSet<>(Arrays.asList(Roles.ANYONE, Roles.USER)));
+        post(Path.Web.REGISTRATION, UserController.registration, new HashSet<>(Arrays.asList(Roles.USER, Roles.USER)));
 
-        get(Path.Web.COMMENT_BY_ISSUE, CommentController.fetchAllComment, new HashSet<>(Arrays.asList(Roles.ANYONE, Roles.ADMIN)));
-        post(Path.Web.COMMENT, CommentController.addComment, Collections.singleton(Roles.ADMIN));
+        get(Path.Web.COMMENT_BY_ISSUE, CommentController.fetchAllComment, new HashSet<>(Arrays.asList(Roles.ANYONE, Roles.USER)));
+        post(Path.Web.COMMENT, CommentController.addComment, Collections.singleton(Roles.USER));
 
-        get(Path.Web.CUSER, UserController.fetchCurrentUser, new HashSet<>(Arrays.asList(Roles.ANYONE, Roles.ADMIN)));
+        get(Path.Web.CUSER, UserController.fetchCurrentUser, new HashSet<>(Arrays.asList(Roles.ANYONE, Roles.USER)));
 
         app.exception(AuthorizationException.class, (e, ctx) -> {
             ctx.status(403);
-            ctx.json(new Response(false, "e.getMessage()"));
+            ctx.json(new Response(Response.Status.ERROR, "e.getMessage()"));
         });
 
         app.exception(Exception.class, (e, ctx) -> {
@@ -97,26 +96,5 @@ public class JavalinManager {
             ctx.status(500);
             ctx.json(new Response(Response.Status.ERROR, exceptionDetails));
         });
-
-        get(Path.Web.ISSUE, IssueController.fetchAllIssue, new HashSet<>(Arrays.asList(Roles.ANYONE, Roles.ADMIN)));
-
-        get(Path.Web.ONE_ISSUE, IssueController.fetchIssueByID, Collections.singleton(Roles.ANYONE));
-        post(Path.Web.ISSUE, IssueController.insertIssue, Collections.singleton(Roles.ANYONE));
-        patch(Path.Web.ONE_ISSUE, IssueController.updateIssue, Collections.singleton(Roles.ANYONE));
-        delete(Path.Web.ONE_ISSUE, IssueController.deleteIssue, Collections.singleton(Roles.ANYONE));
-
-        get(Path.Web.PROJECTS, ProjectController.fetchAllProject, Collections.singleton(Roles.ANYONE));
-        get(Path.Web.PRIORITY, PriorityController.fetchAllPriority, Collections.singleton(Roles.ANYONE));
-        get(Path.Web.STATUS, StatusController.fetchAllStatus, Collections.singleton(Roles.ANYONE));
-        get(Path.Web.TYPES, TypeController.fetchAllType, Collections.singleton(Roles.ANYONE));
-
-        get(Path.Web.USERS, UserController.fetchAllUser, Collections.singleton(Roles.ANYONE));
-
-        post(Path.Web.LOGIN, UserController.login, Collections.singleton(Roles.ANYONE));
-        post(Path.Web.LOGOUT, UserController.logout, Collections.singleton(Roles.ANYONE));
-        post(Path.Web.REGISTRATION, UserController.registration, Collections.singleton(Roles.ANYONE));
-
-        get(Path.Web.COMMENT_BY_ISSUE, CommentController.fetchAllComment, Collections.singleton(Roles.ANYONE));
-        post(Path.Web.COMMENT, CommentController.addComment, Collections.singleton(Roles.ANYONE));
     }
 }
