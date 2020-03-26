@@ -5,13 +5,13 @@ import app.Javalin.JavalinManager;
 import app.Notification.Email.EmailNotificator;
 import app.Notification.NotificationType;
 import app.Security.JavalinJWT;
+import app.Security.Password;
 import app.Util.Configuration;
 import app.Util.Response;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.javalin.http.Handler;
-import org.mindrot.jbcrypt.BCrypt;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -30,12 +30,13 @@ public class UserController {
 
     public static Handler fetchCurrentUser = ctx -> {
         DecodedJWT jwt = JavalinJWT.getDecodedFromContext(ctx);
+
         if(jwt == null) {
             throw new AuthorizationException("Not found user");
         }
 
         User tempUser = UserDao.getValidUser(jwt);
-        if (tempUser != null) {
+        if (tempUser == null) {
             throw new AuthorizationException("Not found user");
         }
 
@@ -59,8 +60,7 @@ public class UserController {
 
         User tempUser = users.get(0);
         String pas = tempUser.getPassword();
-//        if (!BCrypt.checkpw(password, pas)) {
-        if(!pas.equals(password)) {
+        if (!Password.check(password, pas)) {
             ctx.status(401);
             ctx.result("User not found");
             return;

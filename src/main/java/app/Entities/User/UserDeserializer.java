@@ -1,5 +1,6 @@
 package app.Entities.User;
 
+import app.Security.Password;
 import app.Util.Configuration;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -7,7 +8,6 @@ import com.fasterxml.jackson.core.ObjectCodec;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.JsonNode;
-import org.mindrot.jbcrypt.BCrypt;
 
 import java.io.IOException;
 
@@ -18,12 +18,16 @@ public class UserDeserializer extends JsonDeserializer<User> {
         JsonNode node = codec.readTree(jsonParser);
 
         final String password = node.get("password").asText();
-//        int salt = Integer.parseInt(Configuration.properties.getProperty("salt"));
-//        String hashedPassword = BCrypt.hashpw(password, BCrypt.gensalt(salt));
+        String hashedPassword = null;
+        try {
+            hashedPassword = Password.getSaltedHash(password);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         final String firstName = node.get("firstName").asText();
         final String lastName = node.get("lastName").asText();
         final String email = node.get("email").asText();
 
-        return new User(firstName, lastName, password, email, "1");
+        return new User(firstName, lastName, hashedPassword, email, "1");
     }
 }
