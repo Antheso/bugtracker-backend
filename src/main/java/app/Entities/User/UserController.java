@@ -14,6 +14,7 @@ import io.javalin.http.Handler;
 import org.mindrot.jbcrypt.BCrypt;
 
 import java.util.ArrayList;
+import java.util.Date;
 
 public class UserController {
     private static EmailNotificator emailNotificator = new EmailNotificator();
@@ -32,7 +33,7 @@ public class UserController {
         if(jwt == null) {
             throw new AuthorizationException("Not found user");
         }
-        
+
         User tempUser = UserDao.getValidUser(jwt);
         if (tempUser != null) {
             throw new AuthorizationException("Not found user");
@@ -66,13 +67,14 @@ public class UserController {
         }
 
         String token = JavalinManager.provider.generateToken(tempUser);
-        JavalinJWT.addTokenToCookie(ctx, token);
-
+        Date expdate = new Date ();
+        expdate.setTime (expdate.getTime() + 36000*1000);
+        ctx.header("set-cookie", "jwt="+ token + " ; SameSite=Lax; Path=/; Expires=" + expdate);
         ctx.json(new Response(Response.Status.OK, "success login"));
     };
 
     public static Handler logout = ctx -> {
-        JavalinJWT.removeTokenToCookie(ctx);
+        ctx.header("set-cookie", "jwt=; SameSite=Lax; Path=/; Expires= Thu, 01 Jan 1970 00:00:00 GMT");
         ctx.json(new Response(Response.Status.OK, "logout"));
     };
 
