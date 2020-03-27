@@ -39,6 +39,7 @@ public class Configuration {
             setProperty("port", configurationMap.get("port"));
             setProperty("secret", configurationMap.get("secret"));
             setProperty("javalin_port", configurationMap.get("javalin_port"));
+            setProperty("salt", configurationMap.get("salt"));
             logger.info("Configuration loaded");
         } catch (IOException e) {
             logger.error(e.toString());

@@ -1,6 +1,5 @@
 package app.Entities.User;
 
-import app.Entities.Type.TypeDao;
 import app.Security.JWTGenerator;
 import app.Security.JWTProvider;
 import app.Util.Configuration;
@@ -17,7 +16,7 @@ public class UserProvider {
         JWTGenerator<User> generator = (user, alg) -> {
             JWTCreator.Builder token = JWT.create()
                     .withClaim("userId", user.getUserId())
-                    .withClaim("name", user.getName())
+                    .withClaim("userName", user.getFirstName())
                     .withClaim("roleId", user.getRoleId());
             logger.info("Token created for user " + user.getUserId());
             return token.sign(alg);

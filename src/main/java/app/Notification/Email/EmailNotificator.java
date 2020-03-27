@@ -21,8 +21,8 @@ public class EmailNotificator {
     private EmailSender emailSender;
 
     public EmailNotificator() {
-        readProperties();
-        emailSender = new EmailSender(username, password);
+        //readProperties();
+        //emailSender = new EmailSender(username, password);
     }
 
     private void readProperties() {

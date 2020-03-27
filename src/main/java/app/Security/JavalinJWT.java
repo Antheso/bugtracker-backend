@@ -1,5 +1,6 @@
 package app.Security;
 
+import app.Exception.AuthorizationException;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import io.javalin.http.Context;
 import io.javalin.http.Handler;
@@ -20,13 +21,12 @@ public class JavalinJWT {
         return context;
     }
 
-    public static DecodedJWT getDecodedFromContext(Context context)
-    {
+    public static DecodedJWT getDecodedFromContext(Context context) {
         Object attribute = context.attribute(CONTEXT_ATTRIBUTE);
 
         if (!DecodedJWT.class.isInstance(attribute))
         {
-            throw new InternalServerErrorResponse("The context carried invalid object as JavalinJWT");
+            return null;
         }
 
         return (DecodedJWT) attribute;
@@ -54,6 +54,11 @@ public class JavalinJWT {
     public static Context addTokenToCookie(Context context, String token)
     {
         return context.cookie(COOKIE_KEY, token);
+    }
+
+    public static Context removeTokenToCookie(Context context)
+    {
+        return context.removeCookie(COOKIE_KEY);
     }
 
     public static Handler createHeaderDecodeHandler(JWTProvider jwtProvider)

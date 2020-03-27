@@ -7,12 +7,12 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 public class Comment {
     String commentId;
     String text;
-    String issueId;
+    String issueNumber;
     User user;
     long timestamp;
 
-    public Comment(String issueId, String commentId, String text, User user, long timestamp) {
-        this.issueId = issueId;
+    public Comment(String issueNumber, String commentId, String text, User user, long timestamp) {
+        this.issueNumber = issueNumber;
         this.commentId = commentId;
         this.text = text;
         this.user = user;
@@ -35,12 +35,12 @@ public class Comment {
         this.text = text;
     }
 
-    public String getIssueId() {
-        return issueId;
+    public String getIssueNumber() {
+        return issueNumber;
     }
 
-    public void setIssueId(String issueId) {
-        this.issueId = issueId;
+    public void setIssueNumber(String issueNumber) {
+        this.issueNumber = issueNumber;
     }
 
     public long getTimestamp() {
@@ -64,7 +64,7 @@ public class Comment {
         return "Comment{" +
                 "commentId='" + commentId + '\'' +
                 ", text='" + text + '\'' +
-                ", issueId='" + issueId + '\'' +
+                ", issueId='" + issueNumber + '\'' +
                 ", timestamp='" + timestamp + '\'' +
                 '}';
     }

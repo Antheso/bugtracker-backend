@@ -28,7 +28,7 @@
     </appender>
 
 <!--    <logger name="com.baeldung.logback" level="INFO"/>-->
-    <logger name="com.baeldung.logback.tests" level="ERORR"/>
+    <logger name="com.baeldung.logback.tests" level="INFO"/>
 
     <root>
         <appender-ref ref="STDOUT" />

@@ -14,5 +14,6 @@ public class Path {
         public static final String REGISTRATION = "/api/registration";
         public static final String COMMENT_BY_ISSUE = "/api/comments/:issueId";
         public static final String COMMENT = "/api/comments";
+        public static final String CUSER = "/api/cuser";
     }
 }

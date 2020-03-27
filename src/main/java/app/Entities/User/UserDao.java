@@ -3,6 +3,8 @@ package app.Entities.User;
 import app.DB.PostgreConnector;
 import app.Entities.Type.TypeDao;
 import app.Util.MyLogger;
+import com.auth0.jwt.interfaces.DecodedJWT;
+import com.fasterxml.uuid.impl.UUIDUtil;
 import org.eclipse.jetty.util.StringUtil;
 import java.sql.*;
 import java.util.ArrayList;
@@ -24,7 +26,7 @@ public class UserDao {
             while (resultSet.next())
             {
                 String userId = resultSet.getString("user_id");
-                String name = resultSet.getString("name");
+                String name = resultSet.getString("first_name");
 
                 if(StringUtil.isEmpty(userId) && StringUtil.isEmpty(name))
                     continue;
@@ -58,7 +60,7 @@ public class UserDao {
                 String userId = resultSet.getString("user_id");
                 String password = resultSet.getString("password");
                 String roleId = resultSet.getString("role_id");
-                String name = resultSet.getString("name");
+                String name = resultSet.getString("first_name");
 
                 if(!StringUtil.isEmpty(password) && !StringUtil.isEmpty( userId ) && !StringUtil.isEmpty(roleId) && !StringUtil.isEmpty(name))
                     users.add(new User(userId, password, roleId, name));
@@ -73,6 +75,42 @@ public class UserDao {
             connection.close();
         }
         return users;
+    }
+
+    public static User getValidUser(DecodedJWT jwt) throws SQLException {
+        User user = null;
+        Connection connection = PostgreConnector.createConnection();
+        try
+        {
+            PostgreConnector.createConnection();
+            PreparedStatement preparedStatement = PostgreConnector.createStatement(connection, SELECT_VALID_USER);
+            preparedStatement.setInt(1, Integer.parseInt(jwt.getClaim("roleId").asString()));
+            preparedStatement.setObject(2, UUIDUtil.uuid(jwt.getClaim("userId").asString()));
+            preparedStatement.setString(3, jwt.getClaim("userName").asString());
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            while (resultSet.next())
+            {
+                String userId = resultSet.getString("user_id");
+                String roleId = resultSet.getString("role_id");
+                String name = resultSet.getString("first_name");
+
+                if(!StringUtil.isEmpty( userId ) && !StringUtil.isEmpty(roleId) && !StringUtil.isEmpty(name)) {
+                    user = new User(userId, null, roleId, name);
+                } else {
+                    throw new Exception("Not found user");
+                }
+            }
+        }
+        catch (Exception e)
+        {
+            logger.error(e);
+        }
+        finally
+        {
+            connection.close();
+        }
+        return user;
     }
 
     public static ArrayList<User> getUserById(String id) throws SQLException {
@@ -107,17 +145,16 @@ public class UserDao {
         return users;
     }
 
-    public static int addUser(String firstName, String lastName,
-                              String login, String password, String email) throws SQLException {
+    public static int addUser(String firstName, String lastName, String password, String email, String roleId) throws SQLException {
         Connection connection = PostgreConnector.createConnection();
         try {
             PostgreConnector.createConnection();
             PreparedStatement statement = PostgreConnector.createStatement(connection, INSERT_USER_PARAMS);
             statement.setString(1, firstName);
             statement.setString(2, lastName);
-            statement.setString(3, login);
-            statement.setString(4, password);
-            statement.setString(5, email);
+            statement.setString(3, password);
+            statement.setString(4, email);
+            statement.setInt(5, Integer.parseInt(roleId));
 
             return statement.executeUpdate();
         } catch (SQLException ex) {

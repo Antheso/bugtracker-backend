@@ -1,5 +1,7 @@
 package app.Entities.User;
 
+import app.Security.Password;
+import app.Util.Configuration;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.ObjectCodec;
@@ -15,13 +17,17 @@ public class UserDeserializer extends JsonDeserializer<User> {
         ObjectCodec codec = jsonParser.getCodec();
         JsonNode node = codec.readTree(jsonParser);
 
-        final String login = node.get("login").asText();
         final String password = node.get("password").asText();
+        String hashedPassword = null;
+        try {
+            hashedPassword = Password.getSaltedHash(password);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         final String firstName = node.get("firstName").asText();
         final String lastName = node.get("lastName").asText();
         final String email = node.get("email").asText();
 
-
-        return new User(login, password, firstName, lastName, email);
+        return new User(firstName, lastName, hashedPassword, email, "1");
     }
 }
