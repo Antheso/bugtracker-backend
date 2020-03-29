@@ -218,6 +218,21 @@ public class IssueDao {
         return 0;
     }
 
+    public static int deleteAllIssueByProject(String id) throws SQLException {
+        Connection connection = PostgreConnector.createConnection();
+        try {
+            PostgreConnector.createConnection();
+            PreparedStatement preparedStatement = PostgreConnector.createStatement(connection, DELETE_ALL_ISSUE_BY_PROJECT_ID);
+            preparedStatement.setString(1, id);
+            return preparedStatement.executeUpdate();
+        } catch (Exception ex) {
+            logger.error(ex);
+        } finally {
+            connection.close();
+        }
+        return 0;
+    }
+
     public static String[] idToParts(String id) throws Exception {
         String[] parts = id.split("-");
         if (parts.length < 2) {

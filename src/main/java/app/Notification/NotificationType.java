@@ -3,6 +3,9 @@ package app.Notification;
 import app.Entities.Comment.Comment;
 import app.Entities.Issue.Issue;
 import app.Entities.User.User;
+import app.Javalin.JavalinManager;
+
+import java.util.Date;
 
 public class NotificationType {
     public enum UserNotification {
@@ -17,8 +20,9 @@ public class NotificationType {
             @Override
             public String generateText(User user) {
                 // todo: ссылка для подтверждение регистрации, почты и тд
-                return String.format("Now you have to complete the registration, %s",
-                        user.getFirstName());
+                String token = JavalinManager.provider.generateToken(user);
+                return String.format("Now you have to complete the registration, https://t1.sumdu-tss.site/api/registration/%s",
+                        token);
             }
         },
 

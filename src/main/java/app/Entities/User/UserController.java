@@ -4,17 +4,28 @@ import app.Exception.AuthorizationException;
 import app.Javalin.JavalinManager;
 import app.Notification.Email.EmailNotificator;
 import app.Notification.NotificationType;
+import app.Security.JWTProvider;
 import app.Security.JavalinJWT;
 import app.Security.Password;
 import app.Util.Configuration;
 import app.Util.Response;
+import com.auth0.jwt.JWT;
+import com.auth0.jwt.JWTCreator;
+import com.auth0.jwt.JWTVerifier;
+import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.uuid.impl.UUIDUtil;
 import io.javalin.http.Handler;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jwts;
 
+import javax.xml.bind.DatatypeConverter;
 import java.util.ArrayList;
 import java.util.Date;
+
+import com.auth0.jwt.JWT;
 
 public class UserController {
     private static EmailNotificator emailNotificator = new EmailNotificator();
@@ -97,10 +108,45 @@ public class UserController {
             throw new Exception("Insert user failed");
         }
 
-        ctx.json(new Response(Response.Status.OK, "success registration"));
+        user = UserDao.getUser(user.getEmail()).get(0);
 
-//        emailNotificator.sendUserNotification(user,
-//                NotificationType.UserNotification.COMPLETE_REGISTRATION,
-//                user.getEmail());
+        emailNotificator.sendUserNotification(user,
+                NotificationType.UserNotification.COMPLETE_REGISTRATION,
+                user.getEmail());
+
+        ctx.json(new Response(Response.Status.OK, "success registration"));
+    };
+
+    public static Handler registrationVerify = ctx -> {
+
+        String token = ctx.pathParam("token");
+        DecodedJWT jwt = JWT.decode(token);
+
+        User user = UserDao.getValidUser(jwt);
+
+        if(user==null){
+            ctx.status(400);
+            ctx.result("Error");
+        }
+
+        UserDao.setVerified(jwt);
+        ctx.redirect("https://t1.sumdu-tss.site/login");
+    };
+
+    public static Handler resendVerified = ctx -> {
+        DecodedJWT jwt = JavalinJWT.getDecodedFromContext(ctx);
+
+        User user = UserDao.getValidUser(jwt);
+
+        if(user==null){
+            ctx.status(400);
+            ctx.result("Error");
+        }
+
+        emailNotificator.sendUserNotification(user,
+                NotificationType.UserNotification.COMPLETE_REGISTRATION,
+                user.getEmail());
+
+        ctx.json(new Response(Response.Status.OK, "success resend"));
     };
 }

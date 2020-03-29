@@ -13,6 +13,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.javalin.http.Handler;
 
 import java.sql.SQLException;
+import java.sql.Struct;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
@@ -84,11 +85,13 @@ public class IssueController {
         }
 
         ctx.json(new Response(Response.Status.OK, issue));
+        try {
+            ArrayList<String> receivers = new ArrayList();
+            receivers.add(author.getEmail());
+            emailNotificator.sendIssueNotification(issue, NotificationType.IssueNotification.NEW_ISSUE, receivers);
+        }catch (Exception ex){
 
-//        Set<String> receivers = new HashSet<>();
-//        receivers.add(issue.getAuthor().getEmail());
-//        receivers.add(issue.getAssignee().getEmail());
-//        emailNotificator.sendIssueNotification(issue, NotificationType.IssueNotification.NEW_ISSUE, receivers);
+        }
     };
 
     public static Handler updateIssue = ctx -> {
@@ -121,30 +124,31 @@ public class IssueController {
         }
 
         ctx.json(new Response(Response.Status.OK, issue));
+        try {
+            ArrayList<String> receivers = new ArrayList<String>();
+            receivers.add(issue.getAuthor().getEmail());
+            receivers.add(issue.getAssignee().getEmail());
 
-//        Set<String> receivers = new HashSet<>();
-//        receivers.add(issue.getAuthor().getEmail());
-//        receivers.add(issue.getAssignee().getEmail());
+            if (!oldIssue.getStatusId().equals(issue.getStatusId())) {
+                emailNotificator.sendIssueNotification(issue,
+                        NotificationType.IssueNotification.STATUS_CHANGED,
+                        receivers);
+            } else if (!oldIssue.getDescription().equals(issue.getDescription())) {
+                emailNotificator.sendIssueNotification(issue,
+                        NotificationType.IssueNotification.DESCRIPTION_CHANGED,
+                        receivers);
+            } else {
+                emailNotificator.sendIssueNotification(issue,
+                        NotificationType.IssueNotification.SOMETHING_CHANGED,
+                        receivers);
+            }
+        }
+        catch (Exception ex){
 
-        // todo: определиться с тем, что еще нотифицировать конкретно
-//        if (!oldIssue.getStatusId().equals(issue.getStatusId())) {
-//            emailNotificator.sendIssueNotification(issue,
-//                    NotificationType.IssueNotification.STATUS_CHANGED,
-//                    receivers);
-//        } else if (!oldIssue.getDescription().equals(issue.getDescription())) {
-//            emailNotificator.sendIssueNotification(issue,
-//                    NotificationType.IssueNotification.DESCRIPTION_CHANGED,
-//                    receivers);
-//        } else {
-//            emailNotificator.sendIssueNotification(issue,
-//                    NotificationType.IssueNotification.SOMETHING_CHANGED,
-//                    receivers);
-//        }
+        }
     };
 
     public static Handler deleteIssue = ctx -> {
-        CommentDao.removeAllCommentId(ctx.pathParam("id"));
-
         Issue issue = IssueDao.getIssueByID(ctx.pathParam("id"));
         if (issue == null) {
             throw new Exception("Cannot fetch issue to delete it!");
@@ -157,10 +161,14 @@ public class IssueController {
 
         ctx.json(new Response(Response.Status.OK, "delete"));
 
-//        Set<String> receivers = new HashSet<>();
-//        receivers.add(issue.getAuthor().getEmail());
-//        receivers.add(issue.getAssignee().getEmail());
-//        emailNotificator.sendIssueNotification(issue, NotificationType.IssueNotification.ISSUE_DELETED, receivers);
+        try {
+            ArrayList<String> receivers = new ArrayList<String>();
+            receivers.add(issue.getAuthor().getEmail());
+            receivers.add(issue.getAssignee().getEmail());
+            emailNotificator.sendIssueNotification(issue, NotificationType.IssueNotification.ISSUE_DELETED, receivers);
+        }catch (Exception ex){
+
+        }
     };
 
     private static int replaceIssue(Issue issue) throws SQLException {
