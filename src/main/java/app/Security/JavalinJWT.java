@@ -51,6 +51,11 @@ public class JavalinJWT {
         return Optional.ofNullable(context.cookie(COOKIE_KEY));
     }
 
+    public static Optional<String> getTokenFromString(String token)
+    {
+        return Optional.ofNullable(token);
+    }
+
     public static Context addTokenToCookie(Context context, String token)
     {
         return context.cookie(COOKIE_KEY, token);
@@ -74,4 +79,11 @@ public class JavalinJWT {
                 .flatMap(jwtProvider::validateToken)
                 .ifPresent(jwt -> JavalinJWT.addDecodedToContext(context, jwt));
     }
+
+//    public static Handler createStringDecodeHandler(JWTProvider jwtProvider, String token)
+//    {
+//        return context -> getTokenFromString(token)
+//                .flatMap(jwtProvider::validateToken)
+//                .ifPresent(jwt -> JavalinJWT.addDecodedToContext(context, jwt));
+//    }
 }

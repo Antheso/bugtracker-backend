@@ -53,7 +53,6 @@
       <element id="extracted-dir" path="$MAVEN_REPOSITORY$/com/fasterxml/jackson/core/jackson-core/2.10.2/jackson-core-2.10.2.jar" path-in-jar="/" />
       <element id="extracted-dir" path="$MAVEN_REPOSITORY$/org/jetbrains/kotlin/kotlin-stdlib-jdk8/1.3.61/kotlin-stdlib-jdk8-1.3.61.jar" path-in-jar="/" />
       <element id="extracted-dir" path="$MAVEN_REPOSITORY$/commons-codec/commons-codec/1.11/commons-codec-1.11.jar" path-in-jar="/" />
-      <element id="library" level="project" name="Maven: org.mindrot:jbcrypt:0.4" />
       <element id="library" level="project" name="Maven: io.javalin:javalin:3.7.0" />
       <element id="library" level="project" name="Maven: org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.3.61" />
       <element id="library" level="project" name="Maven: org.jetbrains.kotlin:kotlin-stdlib:1.3.61" />
@@ -103,9 +102,12 @@
       <element id="library" level="project" name="Maven: com.auth0:java-jwt:3.4.0" />
       <element id="library" level="project" name="Maven: commons-codec:commons-codec:1.11" />
       <element id="library" level="project" name="Maven: com.googlecode.perfect-hashes:perfect-hashes:1.0" />
-      <element id="library" level="project" name="Maven: javax.mail:mail:1.4" />
-      <element id="library" level="project" name="Maven: javax.activation:activation:1.1" />
       <element id="module-output" name="javalin-html-forms-example" />
+      <element id="library" level="project" name="Maven: javax.activation:activation:1.1" />
+      <element id="library" level="project" name="mail-1.4.7" />
+      <element id="library" level="project" name="javax.mail" />
+      <element id="library" level="project" name="Maven: javax.activation:activation:1.1.1" />
+      <element id="library" level="project" name="Maven: javax.mail:mail:1.4.7" />
     </root>
   </artifact>
 </component>

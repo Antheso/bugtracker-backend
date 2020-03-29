@@ -27,11 +27,17 @@ public class UserDao {
             {
                 String userId = resultSet.getString("user_id");
                 String name = resultSet.getString("first_name");
+                String lastName = resultSet.getString("last_name");
+                String email = resultSet.getString("email");
+                String roleId = resultSet.getString("role_id");
 
-                if(StringUtil.isEmpty(userId) && StringUtil.isEmpty(name))
+                if(StringUtil.isEmpty(userId)
+                        && StringUtil.isEmpty(lastName)
+                        && StringUtil.isEmpty(email)
+                        && StringUtil.isEmpty(name))
                     continue;
 
-                users.add(new User(userId, name));
+                users.add(new User(name, lastName, userId, email, roleId, null));
             }
         }
         catch (SQLException e)
@@ -61,9 +67,15 @@ public class UserDao {
                 String password = resultSet.getString("password");
                 String roleId = resultSet.getString("role_id");
                 String name = resultSet.getString("first_name");
+                String email = resultSet.getString("email");
 
                 if(!StringUtil.isEmpty(password) && !StringUtil.isEmpty( userId ) && !StringUtil.isEmpty(roleId) && !StringUtil.isEmpty(name))
-                    users.add(new User(userId, password, roleId, name));
+                {
+                    User user = new User(userId, password, roleId, name);
+                    user.setEmail(email);
+
+                    users.add(user);
+                }
             }
         }
         catch (SQLException e)
@@ -94,9 +106,13 @@ public class UserDao {
                 String userId = resultSet.getString("user_id");
                 String roleId = resultSet.getString("role_id");
                 String name = resultSet.getString("first_name");
+                String email = resultSet.getString("email");
+                Boolean verified = resultSet.getBoolean("verified");
 
                 if(!StringUtil.isEmpty( userId ) && !StringUtil.isEmpty(roleId) && !StringUtil.isEmpty(name)) {
                     user = new User(userId, null, roleId, name);
+                    user.setEmail(email);
+                    user.setIsVerified(verified);
                 } else {
                     throw new Exception("Not found user");
                 }
@@ -164,5 +180,20 @@ public class UserDao {
         }
 
         return 0;
+    }
+
+    public static void setVerified(DecodedJWT jwt) throws SQLException {
+        Connection connection = PostgreConnector.createConnection();
+        try {
+            PostgreConnector.createConnection();
+            PreparedStatement statement = PostgreConnector.createStatement(connection, UPDATE_USER_VERIFIED);
+            statement.setObject(1, UUIDUtil.uuid(jwt.getClaim("userId").asString()));
+
+            statement.executeUpdate();
+        } catch (SQLException ex) {
+            logger.error(ex);
+        } finally {
+            connection.close();
+        }
     }
 }

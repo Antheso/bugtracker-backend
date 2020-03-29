@@ -40,6 +40,8 @@ public class Configuration {
             setProperty("secret", configurationMap.get("secret"));
             setProperty("javalin_port", configurationMap.get("javalin_port"));
             setProperty("salt", configurationMap.get("salt"));
+            setProperty("username", configurationMap.get("username"));
+            setProperty("password", configurationMap.get("password"));
             logger.info("Configuration loaded");
         } catch (IOException e) {
             logger.error(e.toString());

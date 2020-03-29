@@ -21,6 +21,10 @@ public class User {
     private String password;
     @JsonInclude(NON_NULL)
     private String email;
+    @JsonInclude(NON_NULL)
+    private String projectRoleId;
+    @JsonInclude(NON_NULL)
+    private boolean isVerified;
 
     public User(String userId, String firstName) {
         this.firstName = firstName;
@@ -39,7 +43,15 @@ public class User {
         this.lastName = lastName;
         this.password = password;
         this.email = email;
-        this.roleId = roleId;//default
+        this.roleId = roleId;
+    }
+
+    public User(String firstName, String lastName, String userId, String email, String projectRoleId, String roleId) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.userId = userId;
+        this.email = email;
+        this.projectRoleId = projectRoleId;
     }
 
     public String getFirstName() {
@@ -92,6 +104,22 @@ public class User {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public String getProjectRoleId() {
+        return projectRoleId;
+    }
+
+    public void setProjectRoleId(String projectRoleId) {
+        this.projectRoleId = projectRoleId;
+    }
+
+    public boolean getIsVerified() {
+        return isVerified;
+    }
+
+    public void setIsVerified(boolean isVerified) {
+        this.isVerified = isVerified;
     }
 
     @Override

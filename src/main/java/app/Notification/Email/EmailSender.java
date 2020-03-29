@@ -40,7 +40,7 @@ class EmailSender {
             message.setSubject(email.getSubject());
             message.setText(email.getText());
             Transport.send(message);
-        } catch (MessagingException e) {
+        } catch (Exception e) {
             log.error(e);
         }
     }
